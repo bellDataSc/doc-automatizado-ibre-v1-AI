@@ -1,30 +1,60 @@
-"""Gera o template .docx a partir do relatorio preenchido.
+"""Gera o template .docx e o catalogo de textos a partir do Word revisado.
 
-Decisoes aplicadas (confirmadas com a usuaria):
-  1. Legendas de tabelas/graficos: MANTIDAS integralmente.
-  2. Tabelas: cabecalhos mantidos + 1 unica linha de dados vazia.
-  3. Rotulos fixos de linha: LIMPOS (so o cabecalho de coluna permanece).
-  4. Campos variaveis da capa/cabecalhos: trocados por marcadores {{...}}.
+Uso:
+    python gerar_template_docx.py --origem "<Word revisado .docx>" \
+        --referencia 2026-07 --anterior 2026-04
+
+Entrada: o relatorio publicado de uma referencia, na versao revisada pela
+equipe, em que:
+  - AMARELO = texto que muda a cada referencia;
+  - ROSA/ROXO = texto que permanece entre referencias;
+  - os comentarios dizem o que fazer com cada tabela e grafico.
+
+Saidas:
+  1. template/TEMPLATE_DNIT_Tomo-1_Materiais-SICRO.docx
+     - todo o texto do relatorio e mantido (o estatico vai assim para o Word);
+     - grifos e comentarios removidos;
+     - imagens dos graficos removidas (o app insere as novas sob as legendas);
+     - datas e nomes de arquivo da referencia trocados por marcadores {{...}};
+     - cada bloco de texto editavel recebe um bookmark TXT_<id>, que o
+       materiais_writer usa para escrever o texto revisado pelo analista;
+     - as TABELAS ficam com os valores da referencia de origem. Elas serao
+       sobrescritas quando a planilha das tabelas for mapeada; ate la o app
+       avisa que a tabela mantem os valores do template.
+  2. materiais/textos/blocos_<referencia>.json
+     - o texto de cada bloco editavel, por secao e legenda mais proxima. E o
+       "texto da referencia anterior" que a tela mostra ao analista.
 
 Preserva: secoes e sectPr, orientacao e margens, cabecalhos/rodapes, logos,
 estilos, numeracao automatica (campos SEQ), sumario e listas (campos TOC),
 quebras de pagina e a sequencia de titulos/legendas/Fonte.
 """
 
+import argparse
+import json
+import os
 import re
 import shutil
 import zipfile
 from collections import Counter
 
 from docx import Document
-from docx.oxml import parse_xml
+from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from lxml import etree
 
-SRC = r"c:\Users\isabel.cruz\Desktop\DNIT_II.01.1_RR_15-08.2026_Tomo-1_Materiais-SICRO.docx"
-DST = r"c:\Users\isabel.cruz\Desktop\Docs_Automatizado_IBRE_SICRO\materiais\template\TEMPLATE_DNIT_Tomo-1_Materiais-SICRO.docx"
+AQUI = os.path.dirname(os.path.abspath(__file__))
+DST_PADRAO = os.path.join(AQUI, "template", "TEMPLATE_DNIT_Tomo-1_Materiais-SICRO.docx")
+PASTA_TEXTOS = os.path.join(AQUI, "materiais", "textos")
 
-# --- estilos de texto de conteudo: colapsar em 1 paragrafo vazio ---
+MESES = [
+    "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+    "julho", "agosto", "setembro", "outubro", "novembro", "dezembro",
+]
+MES_ABREV = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+             "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
+
+# --- estilos de texto de conteudo: candidatos a bloco editavel ---
 CONTEUDO = {
     "20_Desenvolvimento-IBRE/SAPR",
     "Desenvolvimento",
@@ -36,64 +66,118 @@ CONTEUDO = {
 FIGURA = {"33_Figura-Grafico-IBRE/SAPR", "34_Fonte-Tab-Fig-Graf-IBRE/SAPR"}
 # --- estilos da capa/folha de rosto: aplicar marcadores ---
 CAPA = {"04_Folha-Rosto-IBRE/SAPR", "03_Detalhes-Capa-IBRE/SAPR"}
+TITULOS = ("16_", "17_", "18_", "19_")
+LEGENDAS = ("28_Titulo-Tab-Fig-Graf-IBRE/SAPR", "Caption")
 
-# Campos variaveis -> marcadores.
-# GERAL: substituidos em qualquer posicao (capa, cabecalhos, rodapes).
-MARC_GERAL = [
-    (re.compile(r"Nº\s*\d{2}-\d{2}/\d{4}"), "Nº {{NUM_RELATORIO}}"),
-    (re.compile(r"VDRI\s*/\s*\d+\s*/\s*\d{4}"), "{{PROTOCOLO_FGV}}"),
-    (re.compile(r"REFERÊNCIA\s+[A-ZÀ-Ú]+/\d{4}"), "REFERÊNCIA {{REFERENCIA}}"),
-    (re.compile(r"Referência\s+[A-ZÀ-Ú][a-zà-ú]+/\d{4}"), "Referência {{REFERENCIA}}"),
-]
-# EXATO: so quando o paragrafo inteiro e o campo (evita trocar anos no meio do texto).
+# Fracao minima de texto grifado em amarelo para o paragrafo ser EDITAVEL.
+# Abaixo disso o amarelo e um campo dentro de texto fixo (data, contagem).
+FRACAO_EDITAVEL = 0.6
+
+RE_LEGENDA = re.compile(r"^(Tabela|Gráfico)\s+(\d+)\s*[-–]\s*(.*)$")
+stats = Counter()
+
+
+# ------------------------------------------------------------------ marcadores
+def marcadores_da_referencia(ref: str, anterior: str) -> list:
+    """Regex -> marcador, derivados das duas referencias (AAAA-MM)."""
+    def partes(r):
+        ano, mes = r.split("-")
+        return int(ano), int(mes)
+
+    a_ano, a_mes = partes(ref)
+    p_ano, p_mes = partes(anterior)
+    atual_ext = f"{MESES[a_mes - 1]} de {a_ano}"
+    ant_ext = f"{MESES[p_mes - 1]} de {p_ano}"
+    atual_arq = f"{MES_ABREV[a_mes - 1]}.{a_ano}"
+    return [
+        # capa, cabecalhos e rodapes
+        (re.compile(r"Nº\s*\d{2}-\d{2}/\d{4}"), "Nº {{NUM_RELATORIO}}"),
+        (re.compile(r"VDRI\s*/\s*\d+\s*/\s*\d{4}"), "{{PROTOCOLO_FGV}}"),
+        (re.compile(r"REFERÊNCIA\s+[A-ZÀ-Ú]+/\d{4}"), "REFERÊNCIA {{REFERENCIA}}"),
+        (re.compile(r"Referência\s+[A-ZÀ-Ú][a-zà-ú]+/\d{4}"), "Referência {{REFERENCIA}}"),
+        # nomes de arquivo: DNIT_II.09.0_2ºOrigem-Precos-SICRO-Ref-Jul.2026
+        (re.compile(r"\d+º(?=RR_|Origem|Resultado|Relatório)"), "{{ORDINAL}}º"),
+        (re.compile(r"RR_\d{2}-\d{2}\.\d{4}"), "RR_{{NUM_RELATORIO}}"),
+        (re.compile(re.escape(atual_arq)), "{{REF_ATUAL_ARQUIVO}}"),
+        # datas por extenso no corpo
+        (re.compile(atual_ext, re.IGNORECASE), "{{REF_ATUAL_EXTENSO}}"),
+        (re.compile(ant_ext, re.IGNORECASE), "{{REF_ANTERIOR_EXTENSO}}"),
+    ]
+
+
 MARC_EXATO = [
     (re.compile(r"^\s*[A-ZÀ-Ú][a-zà-ú]+ de \d{4}\s*$"), "{{MES_ANO_EMISSAO}}"),
     (re.compile(r"^\s*\d{4}\s*$"), "{{ANO}}"),
 ]
 
-W_BR_PAGE = qn("w:br") + '[@' + qn("w:type") + '="page"]'
-stats = Counter()
+
+# ------------------------------------------------------------------ utilidades
+def texto_paragrafo(p):
+    return "".join(t.text or "" for t in p.iter(qn("w:t")))
 
 
-def tem_quebra_pagina(p):
-    return bool(p.findall(".//" + W_BR_PAGE))
+def eh_amarelo(r):
+    rpr = r.find(qn("w:rPr"))
+    if rpr is None:
+        return False
+    h = rpr.find(qn("w:highlight"))
+    return h is not None and h.get(qn("w:val")) == "yellow"
 
 
-def eh_ancora_estrutural(p):
-    """Paragrafo que NUNCA pode ser removido.
-
-    O `w:sectPr` de cada secao mora no `w:pPr` do ultimo paragrafo da secao;
-    remover esse paragrafo destroi a secao (orientacao, margens, cabecalho e
-    rodape proprios). O mesmo vale para quebras de pagina.
-    """
-    ppr = p.find(qn("w:pPr"))
-    if ppr is not None:
-        if ppr.find(qn("w:sectPr")) is not None:
-            return True
-        if ppr.find(qn("w:pageBreakBefore")) is not None:
-            return True
-    return tem_quebra_pagina(p)
+def chars_amarelos(p):
+    return sum(len(texto_paragrafo(r)) for r in p.findall(qn("w:r")) if eh_amarelo(r))
 
 
-def limpar_runs(p, preservar_quebra=True):
-    """Remove runs de texto/imagem do paragrafo, preservando pPr e quebras de pagina."""
-    for filho in list(p):
-        tag = filho.tag.split("}")[1]
-        if tag == "pPr":
+def substituir_em_runs(p, regras) -> int:
+    """Aplica as regras run a run, preservando a formatacao de cada run."""
+    n = 0
+    for r in p.findall(qn("w:r")):
+        ts = r.findall(qn("w:t"))
+        if not ts:
             continue
-        if tag == "r":
-            if preservar_quebra and filho.findall(W_BR_PAGE):
-                for sub in list(filho):
-                    st = sub.tag.split("}")[1]
-                    if st == "rPr":
-                        continue
-                    if st == "br" and sub.get(qn("w:type")) == "page":
-                        continue
-                    filho.remove(sub)
-                continue
-            p.remove(filho)
-        elif tag in ("hyperlink", "fldSimple", "smartTag", "ins", "del"):
-            p.remove(filho)
+        txt = "".join(t.text or "" for t in ts)
+        novo = txt
+        for rx, sub in regras:
+            novo = rx.sub(sub, novo)
+        if novo != txt:
+            ts[0].text = novo
+            ts[0].set(qn("xml:space"), "preserve")
+            for t in ts[1:]:
+                t.text = ""
+            n += 1
+    return n
+
+
+def fundir_runs(p):
+    """Junta runs vizinhos com a mesma formatacao.
+
+    O Word fragmenta o texto em runs por palavra depois de revisoes; sem a
+    fusao, "julho de 2026" fica em tres runs e nenhuma regex o encontra.
+    """
+    anterior = None
+    for r in list(p.findall(qn("w:r"))):
+        filhos = [c.tag.split("}")[1] for c in r if c.tag != qn("w:rPr")]
+        so_texto = filhos and all(t == "t" for t in filhos)
+        rpr = r.find(qn("w:rPr"))
+        chave = etree.tostring(rpr) if rpr is not None else b""
+        if so_texto and anterior is not None and anterior[1] == chave:
+            t_ant = anterior[0].findall(qn("w:t"))[-1]
+            t_ant.text = (t_ant.text or "") + "".join(t.text or "" for t in r.findall(qn("w:t")))
+            t_ant.set(qn("xml:space"), "preserve")
+            p.remove(r)
+            continue
+        anterior = (r, chave) if so_texto else None
+
+
+def definir_texto_xml(p, novo):
+    ts = list(p.iter(qn("w:t")))
+    if not ts:
+        return False
+    ts[0].text = novo
+    ts[0].set(qn("xml:space"), "preserve")
+    for t in ts[1:]:
+        t.text = ""
+    return True
 
 
 def remover_imagens(p):
@@ -105,178 +189,184 @@ def remover_imagens(p):
     return n
 
 
-def texto_paragrafo(p):
-    return "".join(t.text or "" for t in p.iter(qn("w:t")))
+def remover_grifos(raiz):
+    n = 0
+    for h in list(raiz.iter(qn("w:highlight"))):
+        h.getparent().remove(h)
+        n += 1
+    return n
 
 
-def definir_texto_xml(p, novo):
-    """Reescreve o texto do paragrafo no nivel de `w:t`.
+def remover_comentarios(doc):
+    """Tira as marcas de comentario do corpo e as partes de comentario do pacote."""
+    corpo = doc.element
+    n = 0
+    for tag in ("w:commentRangeStart", "w:commentRangeEnd"):
+        for el in list(corpo.iter(qn(tag))):
+            el.getparent().remove(el)
+            n += 1
+    for ref in list(corpo.iter(qn("w:commentReference"))):
+        run = ref.getparent()
+        run.getparent().remove(run)
+        n += 1
+    for rid, rel in list(doc.part.rels.items()):
+        if "comments" in rel.reltype:
+            del doc.part.rels[rid]
+    return n
 
-    Atua so nos elementos de texto: o primeiro recebe o conteudo novo e os
-    demais ficam vazios. Nao mexe nos runs em si, de modo que `w:br`,
-    `w:drawing` e a formatacao de caractere sobrevivem.
-    """
-    ts = list(p.iter(qn("w:t")))
-    if not ts:
-        return False
-    ts[0].text = novo
-    ts[0].set(qn("xml:space"), "preserve")
-    for t in ts[1:]:
-        t.text = ""
-    return True
+
+def bookmark(p, nome: str, bid: int):
+    """Envolve o conteudo do paragrafo num bookmark com o nome dado."""
+    inicio = OxmlElement("w:bookmarkStart")
+    inicio.set(qn("w:id"), str(bid))
+    inicio.set(qn("w:name"), nome)
+    fim = OxmlElement("w:bookmarkEnd")
+    fim.set(qn("w:id"), str(bid))
+    ppr = p.find(qn("w:pPr"))
+    if ppr is not None:
+        ppr.addnext(inicio)
+    else:
+        p.insert(0, inicio)
+    p.append(fim)
 
 
-# ------------------------------------------------------------------ documento
-shutil.copyfile(SRC, DST)
-doc = Document(DST)
-body = doc.element.body
+# ------------------------------------------------------------------ principal
+def gerar(origem: str, destino: str, referencia: str, anterior: str, catalogo: str):
+    shutil.copyfile(origem, destino)
+    doc = Document(destino)
+    body = doc.element.body
+    regras = marcadores_da_referencia(referencia, anterior)
 
-# ---------- 1. paragrafos do corpo ----------
-paras = body.findall(qn("w:p"))
-estilo_de = {}
-for par in doc.paragraphs:
-    estilo_de[id(par._p)] = par.style.name
+    stats["comentarios_removidos"] = remover_comentarios(doc)
 
-anterior_era_conteudo = False
-for p in paras:
-    est = estilo_de.get(id(p))
+    # nome do estilo a partir do w:pStyle (o id dos elementos lxml nao e estavel)
+    nome_estilo = {st.style_id: st.name for st in doc.styles}
+    padrao = doc.styles.default(1)
+    padrao = padrao.name if padrao is not None else "Normal"
 
-    if est in CONTEUDO:
-        protegido = eh_ancora_estrutural(p)
-        limpar_runs(p)
-        primeiro_do_bloco = not anterior_era_conteudo
-        if primeiro_do_bloco or protegido:
-            stats["conteudo_esvaziado"] += 1
-            if protegido:
-                stats["conteudo_esvaziado_protegido"] += 1
-            anterior_era_conteudo = True
-        else:
-            body.remove(p)
-            stats["conteudo_removido"] += 1
-        continue
+    def estilo(p):
+        ppr = p.find(qn("w:pPr"))
+        ps = ppr.find(qn("w:pStyle")) if ppr is not None else None
+        return nome_estilo.get(ps.get(qn("w:val")), padrao) if ps is not None else padrao
 
-    anterior_era_conteudo = False
+    blocos = []          # catalogo de blocos editaveis
+    campos = Counter()   # fragmentos amarelos encontrados no texto fixo
+    secao, legenda = "", ""
+    bloco_aberto = None
+    bid = 9000
 
-    if est in FIGURA:
-        k = remover_imagens(p)
-        if k:
-            stats["imagens_removidas"] += k
-        continue
-
-    if est in CAPA:
+    for p in body.iterchildren():
+        if p.tag != qn("w:p"):
+            bloco_aberto = None
+            continue
+        est = estilo(p)
+        fundir_runs(p)
         txt = texto_paragrafo(p)
-        novo = txt
-        for rx, sub in MARC_GERAL:
-            novo = rx.sub(sub, novo)
-        for rx, sub in MARC_EXATO:
-            if rx.match(novo):
-                novo = sub
-        if novo != txt and definir_texto_xml(p, novo):
-            stats["capa_marcadores"] += 1
 
-# ---------- 2. tabelas ----------
-def linhas_de_cabecalho(t):
-    """Cabecalho = linha 0; + linha 1 quando ha cabecalho de 2 niveis."""
-    if len(t.rows) < 2:
-        return 1
-    try:
-        r0 = [(c.text or "").strip() for c in t.rows[0].cells]
-        r1 = [(c.text or "").strip() for c in t.rows[1].cells]
-    except Exception:
-        return 1
-    # linha 0 totalmente mesclada = linha-titulo -> linha 1 tambem e cabecalho
-    if r0 and len(set(r0)) == 1 and r0[0]:
-        return 2
-    # primeira coluna repetida = celula mesclada verticalmente no cabecalho
-    if r0 and r1 and r0[0] and r0[0] == r1[0]:
-        return 2
-    return 1
+        if est.startswith(TITULOS):
+            secao = txt.strip()
+            bloco_aberto = None
+        elif est in LEGENDAS and RE_LEGENDA.match(txt.strip()):
+            legenda = txt.strip()
+            bloco_aberto = None
 
-
-def limpar_celula(cell):
-    ps = cell._tc.findall(qn("w:p"))
-    for i, p in enumerate(ps):
-        limpar_runs(p, preservar_quebra=False)
-        remover_imagens(p)
-        if i > 0:
-            cell._tc.remove(p)
-    if not cell._tc.findall(qn("w:p")):
-        cell._tc.append(cell._tc.makeelement(qn("w:p"), {}))
-
-
-for t in doc.tables:
-    n_hdr = linhas_de_cabecalho(t)
-    linhas = list(t.rows)
-    dados = linhas[n_hdr:]
-    stats["tabelas"] += 1
-    stats["linhas_cabecalho_mantidas"] += n_hdr
-
-    if not dados:
-        continue
-
-    # primeira linha de dados: mantida e esvaziada
-    vistos = set()
-    for cell in dados[0].cells:
-        if id(cell._tc) in vistos:
+        if est in FIGURA:
+            stats["imagens_removidas"] += remover_imagens(p)
+            bloco_aberto = None
             continue
-        vistos.add(id(cell._tc))
-        limpar_celula(cell)
-    stats["linhas_vazias_mantidas"] += 1
 
-    # demais linhas: removidas
-    for row in dados[1:]:
-        tr = row._tr
-        tr.getparent().remove(tr)
-        stats["linhas_dados_removidas"] += 1
-
-# ---------- 3. notas de rodape ----------
-for rel in doc.part.rels.values():
-    if "footnotes" not in rel.reltype:
-        continue
-    parte = rel.target_part
-    raiz = parse_xml(parte.blob)
-    for fn in raiz.findall(qn("w:footnote")):
-        if int(fn.get(qn("w:id"), "0")) < 1:
-            continue
-        for p in fn.findall(qn("w:p")):
-            limpar_runs(p, preservar_quebra=False)
-        stats["notas_rodape_limpas"] += 1
-    parte._blob = etree.tostring(
-        raiz, xml_declaration=True, encoding="UTF-8", standalone=True
-    )
-
-# ---------- 4. cabecalhos e rodapes: marcadores ----------
-# O texto do cabecalho/rodape do IBRE fica dentro de caixas de texto
-# (w:txbxContent), fora do alcance de `hf.paragraphs` -> percorre o XML da parte.
-CAMPO = (qn("w:fldChar"), qn("w:instrText"), qn("w:fldSimple"))
-
-vistos_partes = set()
-for sec in doc.sections:
-    for hf in (sec.header, sec.footer, sec.first_page_header, sec.first_page_footer,
-               sec.even_page_header, sec.even_page_footer):
-        parte = hf.part
-        if id(parte) in vistos_partes:
-            continue
-        vistos_partes.add(id(parte))
-        for p in parte.element.iter(qn("w:p")):
-            # nunca tocar em paragrafo com campo (numero de pagina, PAGEREF...)
-            if any(p.findall(".//" + tag) for tag in CAMPO):
-                continue
-            txt = texto_paragrafo(p)
-            if not txt.strip():
-                continue
+        if est in CAPA:
             novo = txt
-            for rx, sub in MARC_GERAL:
+            for rx, sub in regras:
                 novo = rx.sub(sub, novo)
+            for rx, sub in MARC_EXATO:
+                if rx.match(novo):
+                    novo = sub
             if novo != txt and definir_texto_xml(p, novo):
-                stats["cabecalho_rodape_marcadores"] += 1
+                stats["capa_marcadores"] += 1
+            continue
 
-doc.save(DST)
+        amarelo = chars_amarelos(p)
+        if amarelo == 0:
+            bloco_aberto = None
+            continue
 
-# ---------- 5. descartar midia orfa ----------
-# python-docx nao coleta as partes de imagem que deixaram de ser referenciadas:
-# os 63 graficos continuariam no pacote como peso morto. Remove as relacoes de
-# imagem sem uso e, em seguida, os arquivos de midia que nenhuma parte cita.
+        editavel = est in CONTEUDO and amarelo >= FRACAO_EDITAVEL * max(len(txt), 1)
+        if not editavel:
+            # campo dentro de texto fixo: registrar o fragmento antes de marcar
+            for r in p.findall(qn("w:r")):
+                if eh_amarelo(r):
+                    frag = texto_paragrafo(r).strip()
+                    if frag:
+                        campos[frag] += 1
+
+        stats["runs_com_marcador"] += substituir_em_runs(p, regras)
+        txt = texto_paragrafo(p)
+
+        if not editavel:
+            bloco_aberto = None
+            continue
+
+        # paragrafos editaveis consecutivos, na mesma secao/legenda, formam um bloco
+        if bloco_aberto is None:
+            bloco_aberto = {
+                "id": f"B{len(blocos) + 1:03d}",
+                "secao": secao,
+                "legenda": legenda,
+                "estilo": est,
+                "paragrafos": [],
+            }
+            blocos.append(bloco_aberto)
+        indice = len(bloco_aberto["paragrafos"]) + 1
+        bid += 1
+        bookmark(p, f"TXT_{bloco_aberto['id']}_P{indice}", bid)
+        bloco_aberto["paragrafos"].append(txt)
+        stats["paragrafos_editaveis"] += 1
+
+    stats["blocos_editaveis"] = len(blocos)
+    stats["grifos_removidos"] = remover_grifos(doc.element)
+
+    # cabecalhos e rodapes: marcadores (texto fica em caixas de texto)
+    CAMPO = (qn("w:fldChar"), qn("w:instrText"), qn("w:fldSimple"))
+    vistos = set()
+    for sec in doc.sections:
+        for hf in (sec.header, sec.footer, sec.first_page_header, sec.first_page_footer,
+                   sec.even_page_header, sec.even_page_footer):
+            parte = hf.part
+            if id(parte) in vistos:
+                continue
+            vistos.add(id(parte))
+            stats["grifos_removidos"] += remover_grifos(parte.element)
+            for p in parte.element.iter(qn("w:p")):
+                if any(p.findall(".//" + tag) for tag in CAMPO):
+                    continue
+                txt = texto_paragrafo(p)
+                if not txt.strip():
+                    continue
+                novo = txt
+                for rx, sub in regras[:4]:
+                    novo = rx.sub(sub, novo)
+                if novo != txt and definir_texto_xml(p, novo):
+                    stats["cabecalho_rodape_marcadores"] += 1
+
+    doc.save(destino)
+    stats["midias_orfas_descartadas"], stats["midias_mantidas"] = limpar_midia(destino)
+
+    os.makedirs(os.path.dirname(catalogo), exist_ok=True)
+    with open(catalogo, "w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "referencia": referencia,
+                "referencia_anterior": anterior,
+                "origem": os.path.basename(origem),
+                "blocos": blocos,
+                "campos_em_texto_fixo": dict(campos.most_common()),
+            },
+            f, ensure_ascii=False, indent=2,
+        )
+
+
+# ---------- midia orfa ----------
 RELS_IMG = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
 R_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 
@@ -292,10 +382,10 @@ def ids_referenciados(xml_bytes):
 
 
 def limpar_midia(caminho):
+    """python-docx nao descarta as imagens que deixaram de ser referenciadas."""
     with zipfile.ZipFile(caminho) as z:
         partes = {n: z.read(n) for n in z.namelist()}
 
-    # 1. por parte, descobrir quais r:id continuam em uso
     alvos_mantidos = set()
     rels_novos = {}
     for nome, dados in partes.items():
@@ -311,8 +401,7 @@ def limpar_midia(caminho):
             if rel.get("Type") != RELS_IMG:
                 continue
             if rel.get("Id") in usados:
-                base = rel.get("Target").split("/")[-1]
-                alvos_mantidos.add(base)
+                alvos_mantidos.add(rel.get("Target").split("/")[-1])
             else:
                 raiz.remove(rel)
                 mudou = True
@@ -321,7 +410,6 @@ def limpar_midia(caminho):
                 raiz, xml_declaration=True, encoding="UTF-8", standalone=True
             )
 
-    # 2. reescrever o pacote sem as midias orfas
     descartadas = [
         n for n in partes
         if n.startswith("word/media/") and n.split("/")[-1] not in alvos_mantidos
@@ -334,12 +422,19 @@ def limpar_midia(caminho):
     return len(descartadas), len(alvos_mantidos)
 
 
-orfas, mantidas = limpar_midia(DST)
-stats["midias_orfas_descartadas"] = orfas
-stats["midias_mantidas"] = mantidas
+if __name__ == "__main__":
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("--origem", required=True, help="Word revisado (.docx) com grifos")
+    ap.add_argument("--destino", default=DST_PADRAO)
+    ap.add_argument("--referencia", required=True, help="referencia do Word, AAAA-MM")
+    ap.add_argument("--anterior", required=True, help="referencia anterior, AAAA-MM")
+    ap.add_argument("--catalogo", default=None, help="json de saida dos blocos")
+    args = ap.parse_args()
+    catalogo = args.catalogo or os.path.join(PASTA_TEXTOS, f"blocos_{args.referencia}.json")
 
-print("TEMPLATE GERADO:", DST)
-for k in sorted(stats):
-    print(f"  {k:<32} {stats[k]}")
+    gerar(args.origem, args.destino, args.referencia, args.anterior, catalogo)
 
-
+    print("TEMPLATE GERADO:", args.destino)
+    print("CATALOGO GERADO:", catalogo)
+    for k in sorted(stats):
+        print(f"  {k:<32} {stats[k]}")

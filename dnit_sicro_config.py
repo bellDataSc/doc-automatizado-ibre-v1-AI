@@ -33,3 +33,31 @@ FRENTES = {
         "pasta": "mao_obra",
     },
 }
+
+# ──────────────────────────────────────────────────────────────
+# SNOWFLAKE — base historica das referencias
+# ──────────────────────────────────────────────────────────────
+# Os nomes abaixo sao preenchidos DEPOIS que o Cortex Code criar a estrutura
+# e devolver schema, tabelas e colunas (ver docs/PROMPT_CORTEX_CARGA.md).
+# Enquanto estiverem vazios, o app trabalha so com as planilhas enviadas e a
+# area de Administracao fica bloqueada.
+SNOWFLAKE = {
+    "database": "",
+    "schema": "",
+    # tabela em formato longo: 1 linha por referencia x codigo x UF
+    "tabela_precos": "",
+    # tabela com 1 linha por referencia carregada (controle de duplicidade)
+    "tabela_referencias": "",
+    # nomes das colunas na tabela de precos
+    "colunas": {
+        "referencia": "REFERENCIA",   # AAAA-MM
+        "codigo": "CODIGO",
+        "descricao": "DESCRICAO",
+        "unidade": "UNIDADE",
+        "uf": "UF",
+        "preco": "PRECO",
+        "origem": "ORIGEM",
+    },
+    # conexao local (fora do Streamlit in Snowflake): nome em connections.toml
+    "connection_name": "default",
+}

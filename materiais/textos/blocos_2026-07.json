@@ -1,0 +1,774 @@
+{
+  "referencia": "2026-07",
+  "referencia_anterior": "2026-04",
+  "origem": "revisao.docx",
+  "blocos": [
+    {
+      "id": "B001",
+      "secao": "Materiais precificados por metodologia de agregados",
+      "legenda": "Tabela 1 - UF direcionadora dos insumos líderes das famílias das areias e britas",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Importa destacar que, para a referência de {{REF_ATUAL_EXTENSO}}, o insumo “M0191 – Brita 1 - m³” na UF MS teve, em seu preço referencial, além da imputação da UF direcionadora indicada na tabela 1, a aplicação de suavização no preço, o que resultou em PRE – Preço Estimado.",
+        "Esse tratamento visa abrandar as variações e manter o ordenamento dos preços da família."
+      ]
+    },
+    {
+      "id": "B002",
+      "secao": "Materiais precificados por metodologia do cimento",
+      "legenda": "Tabela 5 - UF direcionadora dos insumos líderes da família do cimento",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Para a referência de {{REF_ATUAL_EXTENSO}}, apenas o insumo “M1954 – Cimento Portland CP II-32 – granel – kg”, para as UFs AC, RR e PI tiveram seus custos de transporte calculados com base na distância indicada na tabela 5. Além disso, para o insumo “M1954 – Cimento Portland CP II-32 – granel – kg”, ocorreram os seguintes tratamentos:",
+        "RR: teve seu preço imputado e com suavização da variação para não desordenar em relação ao item líder “M0424 – Cimento Portland CP II-32 – saco – kg”, o que resultou em PRE – Preço Estimado;",
+        "AP: teve seu preço estimado com base na relação entre o cimento ensacado e a granel nas UFs RJ e SP para manter o ordenamento esperado em relação ao item líder “M0424 – Cimento Portland CP II-32 – saco – kg”, o que também resultou em PRE – Preço Estimado."
+      ]
+    },
+    {
+      "id": "B003",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 1 - Evolução dos preços do Item M0003 Aço CA 25",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "As variações dos preços em {{REF_ATUAL_EXTENSO}} oscilaram entre -6,79% e 5,08%. Essas variações observadas resultam de dois fatores principais, o primeiro sendo a alteração do quadro de respondentes em função do refinamento da amostra, compatibilizando os respondentes com os critérios de aceitação ou em função do esforço de pesquisa aderindo novos respondentes, e o segundo fator os reajustes de preços realizados pelos próprios respondentes, em reflexo ao comportamento do insumo no período.",
+        "Vale ressaltar que, o aumento da barra de aço repassada pelos respondentes pode ser associado à pressão sobre os custos da cadeia siderúrgica observada entre abril e junho. No período, o minério de ferro acumulou valorização, com a cotação da Bolsa de Chicago passando de US$ 107/t em abril para US$ 109/t em junho, enquanto a variação em 12 meses avançou de 7,41% para 15,19%. Na Bolsa de Dalian, o minério também apresentava alta de 10,12% em 12 meses em junho.",
+        "Além da matéria-prima, o período foi marcado por maior pressão sobre os custos de frete internacional e energia, especialmente diante das tensões geopolíticas entre Irã e Estados Unidos e dos riscos associados ao Estreito de Ormuz, uma das principais rotas para o transporte internacional de petróleo e cargas. A possibilidade de interrupções na região elevou a percepção de risco e os custos logísticos, impactando o transporte marítimo e os custos operacionais da cadeia.",
+        "Dessa forma, a combinação entre minério de ferro mais valorizado, aumento dos custos logísticos e maior risco geopolítico contribuiu para elevar os custos de produção e reposição do aço, oferecendo sustentação para a alta observada no período.",
+        "A variação apresentada na UF RJ reflete uma alteração metodológica na forma de precificação, a UF era imputada de São Paulo e passou a ter preço coletado, enquanto a variação apresentada na UF RR teve origem na metodologia de parametrização, com base no insumo líder M0004."
+      ]
+    },
+    {
+      "id": "B004",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 2 - Evolução dos preços do Item M0004 Aço CA 50",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} variaram entre -3,76% e 8,92%. Essas variações observadas resultam de um fator principal, o primeiro sendo a alteração do quadro de respondentes em função do refinamento que seria os reajustes de preços realizados pelos próprios respondentes, em reflexo ao comportamento do insumo no período.",
+        "De forma complementar, adiciona-se que o aumento da barra de aço repassada pelos respondentes pode ser associado à pressão sobre os custos da cadeia siderúrgica observada entre abril e junho. No período, o minério de ferro acumulou valorização, com a cotação da Bolsa de Chicago passando de US$ 107/t em abril para US$ 109/t em junho, enquanto a variação em 12 meses avançou de 7,41% para 15,19%. Na Bolsa de Dalian, o minério também apresentava alta de 10,12% em 12 meses em junho.",
+        "Além da matéria-prima, o período foi marcado por maior pressão sobre os custos de frete internacional e energia, especialmente diante das tensões geopolíticas entre Irã e Estados Unidos e dos riscos associados ao Estreito de Ormuz, uma das principais rotas para o transporte internacional de petróleo e cargas. A possibilidade de interrupções na região elevou a percepção de risco e os custos logísticos, impactando o transporte marítimo e os custos operacionais da cadeia.",
+        "Dessa forma, a combinação entre minério de ferro mais valorizado, aumento dos custos logísticos e maior risco geopolítico contribuiu para elevar os custos de produção e reposição do aço, oferecendo sustentação para a alta observada no período.",
+        "É importante ressaltar que o FGV IBRE realiza, em todas as suas análises, o cálculo do custo de produção deste insumo, levando em conta as unidades federativas onde é produzido, bem como sua distribuição para outras unidades federativas. Nesse cálculo, são considerados os preços dos materiais, equipamentos e energia necessários para a produção do vergalhão, acrescidos de um percentual correspondente aos custos de comercialização. Também são contemplados os custos de transporte, partindo das unidades federativas produtoras e chegando às demais unidades federativas que não produzem vergalhão, adotando-se o menor custo de transporte para cada uma das unidades federativas de destino.",
+        "Este preço serve como balizador de análise para a aferição dos preços coletados, pois, tendo conhecimento do custo de produção do vergalhão é possível identificar possíveis comportamentos atípicos de mercado e garantir um preço referencial adequado."
+      ]
+    },
+    {
+      "id": "B005",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 3 - Evolução dos preços do Item M0014 Aço CA 60",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre -6,01% e 4,92%. As variações observadas resultam de dois fatores principais, o primeiro sendo a alteração do quadro de respondentes em função do refinamento da amostra, compatibilizando os respondentes com os critérios de aceitação ou em função do esforço de pesquisa aderindo novos respondentes, e o segundo fator os reajustes de preços realizados pelos próprios respondentes, em reflexo ao comportamento do insumo no período."
+      ]
+    },
+    {
+      "id": "B006",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 4 - Evolução dos preços do Item M0424 Cimento Portland CP II - 32 - saco",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre -6,87% e 17,53%. Na presente referência, foram constatadas variações mais elevadas para esse insumo.",
+        "Esse resultado decorre dos esforços voltados ao aprimoramento da pesquisa, à ampliação da coleta de dados e ao aumento do número de respondentes para o item em questão. Como reflexo dessas ações, observou-se uma maior abrangência das origens de preços, sendo que, na presente referência, houve coleta de informações nas 27 Unidades da Federação (UFs), com balizamentos que conferem maior consistência e representatividade aos resultados obtidos.",
+        "Além disso, as variações observadas na referência de julho refletem o cenário econômico vivenciado pela indústria cimenteira no período, influenciado tanto pelo lado da oferta quanto pelo lado da demanda da construção civil. No âmbito da oferta, destacou-se a elevação dos custos de produção, impulsionada principalmente pelo aumento do preço do coque de petróleo, principal combustível utilizado na produção do clínquer e responsável por aproximadamente 40% do custo de fabricação do cimento. Pelo lado da demanda, o mercado permaneceu aquecido em função da continuidade da atividade da construção civil, especialmente pelo fortalecimento do mercado habitacional, com destaque para a ampliação do programa Minha Casa, Minha Vida."
+      ]
+    },
+    {
+      "id": "B007",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 5 - Evolução dos preços do Item M1954 Cimento Portland CP II - 32 - a granel",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de julho de 2026 apresentaram variações entre -9,96% e 7,80%. A redução do número de coletas válidas e a menor quantidade de respondentes para o insumo influenciaram a formação do preço referencial desta referência, contribuindo para as variações apresentadas nos preços do insumo.",
+        "Vale ressaltar que as variações negativas observadas nas UFs MA e TO decorrem de alterações na metodologia de obtenção dos preços. No MA, a metodologia passou de coletado com tratamento para imputado, enquanto no TO houve alteração de estimado para imputado. Já a variação observada no AP resulta da estimativa com base na relação entre o cimento ensacado e a granel nas UFs RJ e SP para não desordenar em relação ao item líder “M0424 – Cimento Portland CP II-32 – saco – kg\"."
+      ]
+    },
+    {
+      "id": "B008",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 6 - Evolução dos preços do Item M0080 Areia Fina",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre referências de -2,56% a 8,77%. Tais percentuais decorrem da variação da tabela de preços dos respondentes, custo de produção e mudanças no quadro de respondentes.",
+        "Destaca-se que, os gráficos 6 ao 11 tratam de insumos pertencentes à família das areias, material mineral natural cuja formação de preço é influenciada por aspectos regionais relacionados à oferta, disponibilidade de reservas e demanda local, tornando esses insumos naturalmente suscetíveis a variações de mercado.",
+        "Complementarmente, adiciona-se o fato de que a alta nos preços dos reflete o impacto direto do encarecimento do óleo diesel. O combustível representa um dos insumos de maior peso na cadeia produtiva desses materiais, onerando fortemente tanto a operação dos equipamentos de desmonte e britagem de rochas nas pedreiras e extração de areia quanto o custo logístico do frete rodoviário. ",
+        "Essa expressiva elevação do diesel no mercado interno foi impulsionada pela recente escalada da tensão geopolítica no Estreito de Ormuz, rota estratégica que impactou a cotação internacional do petróleo. O repasse desse choque global de preços para o mercado brasileiro gerou um efeito imediato em cascata sobre os custos de produção e transporte dos insumos da construção civil.",
+        "A variação na UF CE possui origem na alteração de metodologia de cálculo, anteriormente o item era coletado, e agora passou a ser parametrizado. Já a UF PR apresentou a variação de 8,77% em decorrência da alteração do quadro de respondentes."
+      ]
+    },
+    {
+      "id": "B009",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 7 - Evolução dos preços do Item M1383 Areia Fina Lavada",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre referências de -0,22% a 10,12%. Tais percentuais decorrem da variação da tabela de preços dos respondentes, custo de frete e mudanças no quadro de respondentes.",
+        "A variação de 10,12% na UF PR decorre da elevação dos custos de frete, isso refletiu consideravelmente no nível de preço, a variação de -0,22% na UF TO, foi em decorrência da alteração de metodologia onde o preço era parametrizado e tornou-se precificado por coleta."
+      ]
+    },
+    {
+      "id": "B010",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 8 - Evolução dos preços do Item M0028 Areia Média",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre referências de -3,03% a 9,44%. Tais percentuais decorrem da variação da tabela de preços dos respondentes, custo de produção e mudanças no quadro de respondentes.",
+        "A variação de 9,44% na UF DF decorre da mudança na metodologia, anteriormente era parametrizado com tratamento, e para a referência atual passou a ser preço parametrizado. Para a variação de -3,03% no ES se trata da metodologia de parametrização com base no insumo líder M0082."
+      ]
+    },
+    {
+      "id": "B011",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 9 - Evolução dos preços do Item M0082 Areia Média Lavada",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre referências de -1,57% a 9,86%. Tais percentuais decorrem da variação da tabela de preços dos respondentes, custo de produção e mudanças no quadro de respondentes.",
+        "A variação observada para a UF MG se deve a variações repassadas pelos respondentes, como também ao aumento do custo do frete devido as altas nos preços dos combustíveis. Já a UF ES sofreu alteração no quadro de respondentes, impactando diretamente no nível de preço. "
+      ]
+    },
+    {
+      "id": "B012",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 10 - Evolução dos preços do Item M0081 Areia Grossa",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre referências de 0,61% a 10,79%. Tais percentuais decorrem da variação da tabela de preços dos respondentes, custo de produção e mudanças no quadro de respondentes.",
+        "A variação observada para a UF MA e ES decorre da metodologia de parametrização com base no insumo líder M0082, adiciona-se a isso o aumento do custo do frete que também impactou no custo do insumo na UF MA."
+      ]
+    },
+    {
+      "id": "B013",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 11 - Evolução dos preços do Item M1382 Areia Grossa Lavada",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre referências de 0,43% a 12,38%. Tais percentuais decorrem da variação da tabela de preços dos respondentes, custo de produção, alteração de metodologias e mudanças no quadro de respondentes.",
+        "A variação observada para a UF AC decorre da alteração da metodologia de formação de preço, anteriormente era parametrizado com tratamento e passou a ser apenas parametrizado. "
+      ]
+    },
+    {
+      "id": "B014",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 12 - Evolução dos preços do Item M1098 Brita 0 (pedrisco)",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Para fins de contextualização, o insumo M1098 – Brita 0 (pedrisco) corresponde ao insumo resultante da consolidação dos antigos insumos M0005 – Brita 0 e M1103 – Pedrisco, os quais foram descontinuados.",
+        "Partindo para a análise do gráfico, os preços de {{REF_ATUAL_EXTENSO}}, apresentaram variação em relação à referência de {{REF_ANTERIOR_EXTENSO}} entre -7,49% e 13,76%. As oscilações verificadas decorrem de fatores metodológicos e mercadológicos, destacando-se parametrizações realizadas com base no item líder da família, bem como alterações no quadro de respondentes considerados na composição dos preços referenciais.",
+        "A variação observada na UF CE decorre da alteração da metodologia na formação do preço, anteriormente era parametrizado e passou a ser precificado através coleta. Já a variação na UF PA teve origem na metodologia de parametrização baseada no item líder M0191.",
+        "Destaca-se que, os gráficos 12 ao 19 tratam de insumos pertencentes à família das britas, material mineral natural cuja formação de preço é influenciada por aspectos regionais relacionados à oferta, disponibilidade de reservas e demanda local, tornando esses insumos naturalmente suscetíveis a variações de mercado."
+      ]
+    },
+    {
+      "id": "B015",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 13 - Evolução dos preços do Item M0191 Brita 1",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}}, apresentaram variação em relação à referência de {{REF_ANTERIOR_EXTENSO}} entre -0,62% e 13,36%. As oscilações verificadas decorrem de fatores metodológicos e mercadológicos, destacando-se a imputação de preços, além de alterações no quadro de respondentes considerados na formação dos preços referenciais.",
+        "Complementarmente, adiciona-se o fato de que a alta nos preços dos reflete o impacto direto do encarecimento do óleo diesel. O combustível representa um dos insumos de maior peso na cadeia produtiva desses materiais, onerando fortemente tanto a operação dos equipamentos de desmonte e britagem de rochas nas pedreiras e extração de areia quanto o custo logístico do frete rodoviário. ",
+        "Essa expressiva elevação do diesel no mercado interno foi impulsionada pela recente escalada da tensão geopolítica no Estreito de Ormuz, rota estratégica que impactou a cotação internacional do petróleo. O repasse desse choque global de preços para o mercado brasileiro gerou um efeito imediato em cascata sobre os custos de produção e transporte dos insumos da construção civil.",
+        "A variação observada na UF CE deve-se a alteração metodológica para o estado, o preço coletado anteriormente havia um tratamento e após a confirmação do nível de preço optou-se na presente referência encerrar a suavização Já na UF PA a variação decorre do aumento do preço na UF direcionadora."
+      ]
+    },
+    {
+      "id": "B016",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 14 - Evolução dos preços do Item M0192 Brita 2",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}}, apresentaram variação em relação à referência de {{REF_ANTERIOR_EXTENSO}} entre -1,22% e 11,04%. As oscilações verificadas decorrem de fatores metodológicos, destacando-se parametrizações realizadas com base no item líder da família.",
+        "As oscilações registradas nas UFs de MG e MS refletem a atualização de preços repassada pelos respectivos respondentes."
+      ]
+    },
+    {
+      "id": "B017",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 15 - Evolução dos preços do Item M0193 Brita 3",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}}, apresentaram variação em relação à referência de {{REF_ANTERIOR_EXTENSO}} entre 0,57% e 10,75%. As oscilações verificadas decorrem de fatores metodológicos, destacando-se parametrizações realizadas com base no item líder da família, bem como aplicações de tratamento para preservação do ordenamento da família.",
+        "As variações nas UFs RN e MT tiveram origem na metodologia de parametrização baseada no item líder M0191."
+      ]
+    },
+    {
+      "id": "B018",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 16 - Evolução dos preços do Item M0808 Brita 4",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}}, apresentaram variação em relação à referência de {{REF_ANTERIOR_EXTENSO}} entre 0,33% e 11,32%. As oscilações verificadas decorrem de fatores metodológicos e mercadológicos, destacando-se parametrizações realizadas com base no item líder da família, aplicações de tratamento para preservação do ordenamento da família, bem como alterações no quadro de respondentes considerados na formação dos preços referenciais.",
+        "As variações nas UFs SC e PA tiveram origem na metodologia de parametrização baseada no item líder M0191. Ressalta-se que as menores variações foram mitigadas pelo aumento do custo do frete e em contrapartida as maiores variações foram potencializadas pelo mesmo evento."
+      ]
+    },
+    {
+      "id": "B019",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 17 - Evolução dos preços do Item M2356 Brita para lastro ferroviário",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}}, apresentaram variação em relação à referência de {{REF_ANTERIOR_EXTENSO}} entre 0,24% e 10,76%. As oscilações verificadas decorrem de fatores metodológicos, haja vista que o preço do item é formado a partir dos preços das britas 2, 3 e 4, refletindo naturalmente as variações desses respectivos insumos.",
+        "As variações das UFs MG e PA tiveram origem na metodologia de parametrização do insumo líder M0191."
+      ]
+    },
+    {
+      "id": "B020",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 18 - Evolução dos preços do Item M1135 Pó de Pedra",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}}, apresentaram variação em relação à referência de {{REF_ANTERIOR_EXTENSO}} entre -9,50% e 13,27%. As oscilações verificadas decorrem de fatores metodológicos, destacando-se parametrizações realizadas com base no item líder da família e aplicações de tratamento para preservação do ordenamento da família.",
+        "A variação apresentada na UF CE decorre da incorporação de mais respondentes ao respectivo painel, já a variação na UF PA teve origem na metodologia de parametrização com base no insumo líder M0191."
+      ]
+    },
+    {
+      "id": "B021",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 19 - Evolução dos preços do Item M1097 Pedra de mão ou rachão",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}}, apresentaram variação em relação à referência de {{REF_ANTERIOR_EXTENSO}} entre 0,28% e 11,45%. As oscilações verificadas decorrem de fatores metodológicos e mercadológicos, destacando-se parametrizações realizadas com base no item líder da família, com aplicação de tratamento para preservação do ordenamento da família, bem como alterações no quadro de respondentes considerados na formação dos preços referenciais.",
+        "Na UF PE a variação observada decorre de alterações metodológicas, o preço era precificado por parametrização e passou a ser coletado, já na UF PA a variação está associada à parametrização realizada com base no item líder M0191. Ressalta-se que as menores variações foram mitigadas pelo aumento do custo do frete e em contrapartida as maiores variações foram potencializadas pelo mesmo evento."
+      ]
+    },
+    {
+      "id": "B022",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 20 - Evolução dos preços do Item M0039 Gasolina comum",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços para referência de {{REF_ATUAL_EXTENSO}} apresentam variações entre -4,97% e 5,49%. Os preços coletados com os respondentes foram balizados com dados publicados pela Agência Nacional do Petróleo, Gás Natural e Biocombustíveis – ANP."
+      ]
+    },
+    {
+      "id": "B023",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 21 - Evolução dos preços do Item M0043 Óleo Diesel",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços para referência de {{REF_ATUAL_EXTENSO}} apresentam variações entre -12,46% e 3,85%. Os preços coletados com os respondentes foram balizados com dados publicados pela ANP.",
+        "Após as elevações observadas na referência de abril, decorrentes das tensões geopolíticas no Oriente Médio, verifica-se, na referência de julho, um movimento misto nos preços dos combustíveis. Contudo, o cenário permanece sujeito a incertezas, uma vez que a evolução do conflito ainda pode provocar novas oscilações nos preços."
+      ]
+    },
+    {
+      "id": "B024",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 22 - Evolução dos preços do Item M1790 Gás liquefeito de petróleo (GLP)",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços para referência de {{REF_ATUAL_EXTENSO}} apresentam variações entre -7,32% a 9,01%. A maior parte das variações apresentadas foram decorrentes dos preços coletados com os respondentes, balizados com dados publicados pela ANP."
+      ]
+    },
+    {
+      "id": "B025",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 23 - Evolução dos preços do Item M0237 Energia Elétrica",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços para referência de {{REF_ATUAL_EXTENSO}} apresentam variações entre -0,29% a 26,82%. As variações ocorreram devido a mudança de bandeira tarifária e atualizações tarifárias, por meio de resoluções assinadas entre as concessionárias e Agência Nacional de Energia Elétrica – ANEEL."
+      ]
+    },
+    {
+      "id": "B026",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 24 - Evolução dos preços do Item M0446 Compensado resinado - E = 10 mm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de julho de 2026 apresentam variações entre -7,42% e 18,89%. A variação observada na UF SC decorre da mudança de preço imputado para preço coletado. A variação observada na UF SE teve origem da metodologia de imputação de preços via UF direcionadora."
+      ]
+    },
+    {
+      "id": "B027",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 25 - Evolução dos preços do Item M0447 Compensado resinado - E = 12 mm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de julho de 2026 apresentam variações entre -12,44% e 10,47%. A variação observada na UF MS resulta de preço coletado por meio da pesquisa e respaldado por balizamento. A variação apresentada na UF BA decorre da aplicação de parametrização com base no item líder \"M0446 – Compensado resinado - E = 10 mm”. "
+      ]
+    },
+    {
+      "id": "B028",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 26 - Evolução dos preços do Item M0448 Compensado resinado - E = 14 mm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de julho de 2026 apresentam variações entre -16,54% e 18,55%. A variação na UF BA se deve a mudança de metodologia, anteriormente preço pesquisado e agora parametrizado. A variação na UF SC decorre da aplicação de parametrização com base no item líder \"M0446 – Compensado resinado - E = 10 mm”. "
+      ]
+    },
+    {
+      "id": "B029",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 27 - Evolução dos preços do Item M0442 Compensado plastificado - E = 10 mm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentam variações entre -6,63% e 18,52%. As variações apresentadas nas UFs DF e SC decorrem da aplicação de parametrização com base no item líder \"M0446 – Compensado resinado - E = 10 mm”. "
+      ]
+    },
+    {
+      "id": "B030",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 28 - Evolução dos preços do Item M0443 Compensado plastificado - E = 12 mm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentam variações entre -3,04% e 19,41%. As variações apresentadas nas UFs PB e ES decorrem da aplicação de parametrização com base no item líder \"M0446 – Compensado resinado - E = 10 mm”. "
+      ]
+    },
+    {
+      "id": "B031",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 29 - Evolução dos preços do Item M0459 Compensado plastificado - E = 14 mm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentam variações entre -9,90% e 18,81%. A variação observada na UF PB decorre da mudança de preço parametrizado para preço coletado com tratamento. A variação na UF SC decorre da parametrização com base no item líder \"M0446 – Compensado resinado - E = 10 mm”. "
+      ]
+    },
+    {
+      "id": "B032",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 30 - Evolução dos preços do Item M0286 Tábua - E = 2,5 cm e L = 30 cm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre -17,73% e 10,50%. A variação observada na UF RO decorre da mudança de preço parametrizado para preço coletado. A variação observada na UF SE resulta de preços coletados por meio da pesquisa e respaldado por balizamento. "
+      ]
+    },
+    {
+      "id": "B033",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 31 - Evolução dos preços do Item M0289 Tábua - E = 2,5 cm e L = 15 cm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de julho de 2026 apresentaram variações entre -9,39% e 13,72%. A variação observada na UF GO resulta de preços coletados por meio da pesquisa. A variação em RO decorre da aplicação de metodologia específica para itens madeireiros, descrita no Volume 03: Preços Referenciais da 2ª edição Manual de Custos de Infraestrutura de Transportes. "
+      ]
+    },
+    {
+      "id": "B034",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 32 - Evolução dos preços do Item M0290 Tábua - E = 2,5 cm e L = 10 cm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de julho de 2026 apresentaram variações entre -9,41% e 11,55%. A variação observada na UF AL decorre da mudança de preço coletado para preço aplicado com a metodologia específica para itens madeireiros. A variação na UF RO decorre da aplicação de metodologia específica para itens madeireiros, descrita no Volume 03: Preços Referenciais da 2ª edição Manual de Custos de Infraestrutura de Transportes. "
+      ]
+    },
+    {
+      "id": "B035",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 33 - Evolução dos preços do Item M1429 Tábua de pinho de terceira - E = 2,5 cm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre -17,59% e 10,50%. As variações nas UFs RO e SE decorreram da aplicação de metodologia específica para itens madeireiros, descrita no Volume 03: Preços Referenciais da 2ª edição Manual de Custos de Infraestrutura de Transportes. "
+      ]
+    },
+    {
+      "id": "B036",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 34 - Evolução dos preços do Item M0285 Pontalete para escoramento - D = 15 cm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre -17,90% e 17,69%. A variação observada na UF PR decorre da mudança de preço aplicado com a metodologia específica para itens madeireiros para preço coletado com tratamento. A variação observada na UF GO resulta de preços coletados por meio da pesquisa. "
+      ]
+    },
+    {
+      "id": "B037",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 35 - Evolução dos preços do Item M0301 Pontalete para escoramento - D = 10 cm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre -8,08% e 17,79%. As variações nas UFs PR e GO decorreram da aplicação de metodologia específica para itens madeireiros, descrita no Volume 03: Preços Referenciais da 2ª edição Manual de Custos de Infraestrutura de Transportes. "
+      ]
+    },
+    {
+      "id": "B038",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 36 - Evolução dos preços do Item M1638 Mourão de madeira - H = 2,10 m e D = 0,10 m",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre -4,98% e 12,76%. A variação observada na UF BA decorre da mudança de preço aplicado com a metodologia específica para itens madeireiros para preço coletado com tratamento. A variação observada na UF RJ resulta de preços coletados por meio da pesquisa com tratamento. "
+      ]
+    },
+    {
+      "id": "B039",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 37 - Evolução dos preços do Item M1639 Mourão de madeira - H = 2,20 m e D = 0,15 m",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre -2,01% e 18,39%. A variação observada na UF MT decorre da mudança de preço aplicado com a metodologia específica para itens madeireiros para preço coletado.",
+        "A variação na UF ES decorre da aplicação de metodologia específica para itens madeireiros, descrita no Volume 03: Preços Referenciais da 2ª edição Manual de Custos de Infraestrutura de Transportes. "
+      ]
+    },
+    {
+      "id": "B040",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 38 - Evolução dos preços do Item M2014 Mourão de madeira - H = 2,20 m e D = 0,10 m",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre -5,01% e 3,55%. A variação observada na UF RJ decorre da mudança de preço aplicado com a metodologia específica para itens madeireiros para preço coletado com tratamento. A variação observada na UF ES resulta de preços coletados por meio da pesquisa. "
+      ]
+    },
+    {
+      "id": "B041",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 39 - Evolução dos preços do Item M2119 Mourão de madeira - H = 2,80 m e D = 0,15 m",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre -2,01% e 18,14%. As variações nas UFs MT e ES decorreram da aplicação de metodologia específica para itens madeireiros, descrita no Volume 03: Preços Referenciais da 2ª edição Manual de Custos de Infraestrutura de Transportes. "
+      ]
+    },
+    {
+      "id": "B042",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 40 - Evolução dos preços do Item M1812 Estronca de madeira – D = 20 cm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre 0,00% e 10,42%. A variação observada na UF SC decorre da mudança de preço coletado com tratamento para preço aplicado com a metodologia específica para itens madeireiros.  As demais UFs apresentaram cenário de estabilidade. Os preços se mantiveram estáveis devido à aplicação da metodologia das madeiras. "
+      ]
+    },
+    {
+      "id": "B043",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 41 - Evolução dos preços do Item M2281 Dormente de madeira bitola larga - C = 280 cm, L = 24 cm e H = 17 cm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre 1,33% e 6,46%. As variações observadas nas UFs SP e SC resultam de preços coletados por meio da pesquisa e respaldados por balizamento.",
+        "As demais variações decorreram da aplicação de metodologia específica para itens madeireiros, descrita no Volume 03: Preços Referenciais da 2ª edição Manual de Custos de Infraestrutura de Transportes. "
+      ]
+    },
+    {
+      "id": "B044",
+      "secao": "Diagnósticos de dados pesquisados",
+      "legenda": "Tabela 19 - Quantitativos de preços pesquisados para materiais de comercialização restrita",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "A tabela 20 apresenta o quantitativo que compõe a lista de materiais classificados como comercialização restrita nesta referência. Nota-se que há uma alteração pequena nos quantitativos, quando comparado ao mesmo quadro demonstrado no relatório da referência anterior, devido inclusão de 9 itens provenientes das atividades do Objetivo II."
+      ]
+    },
+    {
+      "id": "B045",
+      "secao": "Itens com preço pesquisado com tratamento e aplicação do frete metodológico",
+      "legenda": "Tabela 20 - Materiais com aplicação de frete metodológico",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Estes itens são identificados no arquivo DNIT_II.09.0_{{ORDINAL}}ºOrigem-Precos-SICRO-Ref-{{REF_ATUAL_ARQUIVO}}, com a sigla “PCT” na UF fabricante e “PFM” nas demais UFs, totalizando 119 insumos na referência {{REF_ATUAL_EXTENSO}}."
+      ]
+    },
+    {
+      "id": "B046",
+      "secao": "Itens com preço pesquisado e atualizado por índice",
+      "legenda": "Tabela 20 - Materiais com aplicação de frete metodológico",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Estes itens são identificados no arquivo DNIT_II.09.0_{{ORDINAL}}ºOrigem-Precos-SICRO-Ref-{{REF_ATUAL_ARQUIVO}}, com a sigla “PCI” em todas as UFs, totalizando 156 insumos na referência {{REF_ATUAL_EXTENSO}}."
+      ]
+    },
+    {
+      "id": "B047",
+      "secao": "Itens com preço extrapolado ou interpolado",
+      "legenda": "Tabela 20 - Materiais com aplicação de frete metodológico",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Estes itens são identificados no arquivo DNIT_II.09.0_{{ORDINAL}}ºOrigem-Precos-SICRO-Ref-{{REF_ATUAL_ARQUIVO}}, com a sigla “PEI” em todas as UFs, totalizando 13 insumos na referência {{REF_ATUAL_EXTENSO}}."
+      ]
+    },
+    {
+      "id": "B048",
+      "secao": "Itens com preço pesquisado e imputado nas demais UFs",
+      "legenda": "Tabela 20 - Materiais com aplicação de frete metodológico",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Na referência de {{REF_ATUAL_EXTENSO}}, 15 insumos de comercialização restrita tiveram seus preços imputados, sendo representados com origem “PC” ou “PCT” na UF fabricante e “PRI” nas demais UFs. Tais itens encontram-se identificados no arquivo DNIT_II.09.0_{{ORDINAL}}ºOrigem-Precos-SICRO-Ref-{{REF_ATUAL_ARQUIVO}}. A consolidação dos parâmetros necessários para aplicação da metodologia de transporte está prevista para as próximas referências."
+      ]
+    },
+    {
+      "id": "B049",
+      "secao": "Materiais de comercialização restrita relevantes em orçamentos de infraestrutura",
+      "legenda": "Tabela 23 - Variação dos materiais de comercialização restrita relevantes em orçamentos de infraestrutura",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Em análise dos demais itens relevantes de comercialização restrita, verificou-se que, na referência em questão, não houve variações superiores a 10% em módulo. Dessa forma, não se identificaram ocorrências que demandassem análise individualizada dos movimentos de preço, razão pela qual não é apresentada tabela específica para esse grupo de insumos."
+      ]
+    },
+    {
+      "id": "B050",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 48 - Evolução dos preços do Item M1941 Óleo tipo A1",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de referência de {{REF_ATUAL_EXTENSO}} apresentaram variações entre 6,44% e 7,75%. Em razão das restrições ambientais aplicáveis à comercialização desse combustível, as coletas de preços para esse insumo tornaram-se cada vez mais escassas, levando à adoção do frete metodológico para sua precificação a partir da referência de abril de 2025.",
+        "Essas restrições decorrem do teor de enxofre do óleo combustível tipo OCA1, cujo limite máximo é de 2,0% em massa, superior ao estabelecido para os óleos do tipo OCB (1,0% em massa). A combustão de combustíveis com maior teor de enxofre resulta em maiores emissões de dióxido de enxofre (SO2), contribuindo para a degradação da qualidade do ar e para a formação de poluentes atmosféricos secundários. Por esse motivo, a Resolução ANP nº 899/2022 determina a comercialização de óleos combustíveis com teor de enxofre igual ou inferior a 1,0% em determinadas capitais e regiões metropolitanas, restringindo a oferta e o consumo do OCA1 nessas localidades."
+      ]
+    },
+    {
+      "id": "B051",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 49 - Evolução dos preços do Item M0427 Cordoalha nua tipo CP 190 RB - D = 12,7 mm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços para referência de {{REF_ATUAL_EXTENSO}} apresentam variações entre 0,25% e 1,44%. A variação apresentada na UF SC decorre de variação apresentada e confirmada com o respondente. Demais variações decorrem da aplicação do frete metodológico."
+      ]
+    },
+    {
+      "id": "B052",
+      "secao": "Evolução de preços dos materiais representativos em infraestrutura",
+      "legenda": "Gráfico 50 - Evolução dos preços do Item M1765 Tubo em aço-carbono schedule 40 - D = 65 mm (2 1/2\")",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Os preços de {{REF_ATUAL_EXTENSO}} apresentaram variações entre -0,15% e 1,17%. A variação apresentada na UF SP decorre de variação apresentada e confirmada com o respondente. Demais variações decorrem da aplicação do frete metodológico."
+      ]
+    },
+    {
+      "id": "B053",
+      "secao": "Amplitudes de preços de materiais de comercialização restrita",
+      "legenda": "Tabela 26 - Distribuição de amplitudes de materiais de comercialização restrita",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "A análise da Tabela 26 demonstra a manutenção da estabilidade das amplitudes de preços dos materiais de comercialização restrita ao longo das referências analisadas. Observa-se predominância significativa de insumos concentrados na faixa de amplitude de até 25%, que passou de 92,82% em julho de 2025 para 94,79% em {{REF_ATUAL_EXTENSO}}, evidenciando redução gradual da dispersão de preços entre as UFs. Em contrapartida, verificou-se diminuição da participação de itens com amplitudes entre 25% e 50%, de 5,19% para 4,23%, bem como daqueles com amplitudes superiores a 50%, que reduziram de 1,99% para 0,98% no mesmo período. Tal comportamento indica maior uniformidade na distribuição dos preços referenciais dos insumos avaliados."
+      ]
+    },
+    {
+      "id": "B054",
+      "secao": "Amplitudes de preços de materiais de comercialização restrita",
+      "legenda": "Gráfico 51 - Preços e amplitude Item M0427 Cordoalha nua tipo CP 190 RB - D = 12,7 mm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Pode-se notar que a UFF deste item é Santa Catarina na Região Sul (menor preço e, portanto, preço na origem da UF Fabricante). Os maiores preços encontram-se na Região Norte, onde os custos de transporte aumentam devido ao aumento da distância."
+      ]
+    },
+    {
+      "id": "B055",
+      "secao": "Amplitudes de preços de materiais de comercialização restrita",
+      "legenda": "Gráfico 52 - Preços e amplitude Item M3276 Ancoragem regulável para estais de 43 cordoalhas - D = 15,7 mm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "A análise demonstra que o item M3276 apresenta comportamento homogêneo entre as unidades da federação, indicando consistência e estabilidade nos preços observados."
+      ]
+    },
+    {
+      "id": "B056",
+      "secao": "Amplitudes de preços de materiais de comercialização restrita",
+      "legenda": "Gráfico 53 - Preços e amplitude Item M1446 Geogrelha bidirecional em polipropileno extrudado - resistência à tração de 30 kN/m, deformação inferior a 5% e malha de 36 x 34 mm",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Pode-se notar que a UFF deste item é São Paulo na Região Sudeste (menor preço e, portanto, preço na origem da UF Fabricante). Os maiores preços encontram-se na Região Norte, onde os custos de transporte aumentam devido ao aumento da distância."
+      ]
+    },
+    {
+      "id": "B057",
+      "secao": "Amplitudes de preços de materiais de comercialização restrita",
+      "legenda": "Gráfico 54 - Preços e amplitude Item M1968 Defensa metálica semimaleável",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Para o item M1968, houve a manutenção das coletas obtidas e no número de respondentes para a referência {{REF_ATUAL_EXTENSO}}, refletindo pouca variação na amplitude da referência atual. "
+      ]
+    },
+    {
+      "id": "B058",
+      "secao": "Amplitudes de preços de materiais de comercialização restrita",
+      "legenda": "Gráfico 55 - Preços e amplitude Item M2027 Tinta refletiva acrílica",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Para o item M2027, não existem destaques de amplitudes a serem apresentados."
+      ]
+    },
+    {
+      "id": "B059",
+      "secao": "Análises de amplitudes acima de 100%",
+      "legenda": "Gráfico 55 - Preços e amplitude Item M2027 Tinta refletiva acrílica",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "M0042 - Contêiner com janela - L = 2,44 m e C = 6,09 m (1 TEU)",
+        "Trata-se de insumo de comercialização restrita e, historicamente, registra amplitudes elevadas entre as Unidades da Federação. Na referência analisada, a amplitude de 111,48% decorre, principalmente, dos elevados custos de transporte incidentes sobre o atendimento da Região Norte. Em razão de suas dimensões e características logísticas, o frete possui participação significativa na composição do preço final do insumo, contribuindo para o aumento das diferenças de preços observadas entre as regiões pesquisadas e, consequentemente, para a amplitude verificada."
+      ]
+    },
+    {
+      "id": "B060",
+      "secao": "Principais gráficos de ordenamentos de preços de materiais de comercialização restrita",
+      "legenda": "Gráfico 55 - Preços e amplitude Item M2027 Tinta refletiva acrílica",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Para selecionar quais famílias irão figurar nos gráficos de ordenamento apresentados nos gráficos 56 ao 62, utilizou-se o critério de famílias com o maior valor agregado, ou seja, os maiores valores encontrados através da soma do valor unitário na UFF, dos integrantes de cada família.",
+        "Assim, analisando as famílias atuais de materiais industrializados específicos, classificam-se conforme critério acima, nove famílias que equivalem em valor agregado a aproximadamente 50% do somatório do valor unitário de todos os materiais com preço obtido por frete metodológico."
+      ]
+    },
+    {
+      "id": "B061",
+      "secao": "Ocorrências em ordenamentos de preços de materiais com DMT",
+      "legenda": "Gráfico 62 - Ordenamento na UFF, para as famílias de: Pórtico Metálico",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Não há nessa referência destaques em ordenamentos de preços que mereçam estar detalhadas neste relatório."
+      ]
+    },
+    {
+      "id": "B062",
+      "secao": "PREÇOS COLETADOS NO VAREJO",
+      "legenda": "Gráfico 62 - Ordenamento na UFF, para as famílias de: Pórtico Metálico",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "O Contrato nº 647/2024 (SEI nº 19092578), celebrado em 30 de setembro de 2024 entre o DNIT e o FGV IBRE, prevê, em caráter complementar, a implantação da pesquisa de preços no mercado varejista de até 15 insumos integrantes das famílias da areia, brita, cimento e vergalhão de aço. Após a implantação, o FGV IBRE realizará esforços de pesquisa de preços com frequência trimestral, abrangendo as capitais, ou eventuais regiões metropolitanas das 27 Unidades da Federação - UFs.",
+        "Inicialmente, o esforço de pesquisa de preços no mercado varejista subsidiará a rotina de balizamento de preços a partir da margem da coleta calculada pela ótica do varejo. Posteriormente, a partir da observação de uma série histórica mais longa que possibilite a comparação de ao menos dois anos distintos, serão realizados estudos de novas metodologias voltadas a viabilizar o cálculo de preços referenciais com base em coletas oriundas do varejo.",
+        "Nesse contexto, cabe destacar que na conclusão do 2º Relatório Final nº 01-04/2024 entregue ao DNIT por meio da Carta FGV IBRE SIMG/276/2024 (SEI nº 18381527), de 15 de julho de 2024, o FGV IBRE apresenta a seguinte consideração:",
+        "Ressalta-se também que os resultados apresentados são distintos para cada insumo em cada uma das Unidades da Federação. Sendo assim, não é recomendável a aplicação das margens observadas em outras UFs. Para observação individualizada da série histórica de preços e determinação de uma margem adequada ao comportamento regional, recomenda-se para os insumos cuja utilização foi considerada viável a ampliação da pesquisa do varejo nas demais Unidades da Federação.",
+        "Destaca-se que no estudo supracitado, os dados do varejo eram referentes ao ano de 2023, com a última pesquisa utilizada como fonte sendo a de outubro de 2023. Além disso, a pesquisa de preços no varejo abrangia apenas cinco UFs: São Paulo, Paraná, Goiás, Bahia e Amazonas.",
+        "Desde a referência julho de 2024, o FGV IBRE apresenta uma introdução da utilização dos preços do varejo no balizamento do nível de preço no relatório de resultados se valendo dos dados disponíveis em seu banco de preços. A conclusão do 2º Relatório Final nº 01-04/2024, também apresentou a seguinte observação:",
+        "Por fim, os resultados deste estudo permitiram concluir pela não recomendação de incorporar os preços varejo transformados em atacado nas metodologias utilizadas para formação do preço referencial. Não obstante, a observação de séries históricas mais longas e robustas podem alterar esse diagnóstico.",
+        "Cabe ressaltar que a Proposta Técnica e Comercial IBRE nº 82304-1/2024 (SEI nº 18829613), de 29 de agosto de 2024, vinculada ao Contrato nº 647/2024 (SEI nº 19092578), apresenta a seguinte informação:",
+        "Contudo, a observação de uma série histórica mais longa que possibilite a comparação de ao menos 02 (dois) anos distintos, poderá alterar esse diagnóstico e permitir a incorporação dos preços de varejo convertidos em atacado na formação dos preços referenciais do SICRO. A observação de uma série histórica com no mínimo 02 (dois) anos sequenciais permitirá a identificação da existência de possíveis comportamentos sazonais que possam interferir de alguma maneira nos resultados obtidos.",
+        "Diante do exposto, assim como feito na referência anterior, em {{REF_ANTERIOR_EXTENSO}}, enquanto a série histórica da base de dados de preços coletados no varejo não atinge a robustez de tempo necessária para observação individualizada e determinação da margem de varejo específica para cada insumo, o FGV IBRE realizará o balizamento de preços dos insumos utilizando como referencial de comparação a margem da Pesquisa Anual do Comercio – PAC do Instituto Brasileiro de Geografia Estatística – IBGE.",
+        "A PAC tem abrangência geográfica nacional e seus resultados são divulgados com granularidade aos níveis Brasil, grandes regiões e Unidades da Federação. Além disso, essa pesquisa tem periodicidade anual e uma defasagem de dois anos. Dessa forma, os dados disponibilizados mais recentes são referentes ao ano de 2023. Destaca-se ainda que, na presente análise, foi utilizada a série completa da PAC, disponível após a sua reformulação em 2007. A margem da PAC foi atualizada no ano de 2025 de acordo com as premissas estabelecidas no Estudo do Varejo, e corresponde a 34,28%.",
+        "Dadas as considerações, o FGV IBRE realizou análise comparativa para o insumo “M0004 – Aço CA 50” nas 27 UFs. O gráfico 63 apresenta a comparação de preços varejo com o preço atacado entregue ao DNIT para o referido insumo na referência {{REF_ATUAL_EXTENSO}}."
+      ]
+    },
+    {
+      "id": "B063",
+      "secao": "PREÇOS COLETADOS NO VAREJO",
+      "legenda": "Gráfico 63 - Comparação atacado x varejo SICRO para o “M0004 – Aço CA 50 – kg” em julho/2026",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Observa-se que os preços varejo apresentaram níveis superiores aos do atacado em todas as regiões sendo as maiores diferenças varejo x atacado observadas nas UF BA (59%), PE (52%), PA (49%) e MG (45%). Além disso, com exceção da região Sul, as coletas do varejo seguiram tendências distintas de seus pares do atacado na comparação entre UFs de uma mesma região. Esses dados sugerem que, apesar de algumas semelhanças, cada modalidade de coleta pode apresentar dinâmicas locais próprias de precificação.",
+        "Seguindo as premissas apresentadas no estudo do varejo, o FGV IBRE calculou a margem de conversão para as coletas realizadas no varejo e converteu os preços para realizar a comparação de nível de preço. A tabela 27 apresenta a consolidação e comparação dessas informações para a UF de SP."
+      ]
+    },
+    {
+      "id": "B064",
+      "secao": "PREÇOS COLETADOS NO VAREJO",
+      "legenda": "Tabela 27 - Comparativo preço varejo convertido em atacado x atacado SICRO – SP julho/2026",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "O Aço CA 50 apresenta coletas no varejo nas modalidades varejo comum - VV e varejo corporativo - VX, com a aplicação da margem PAC de 34,28% para a conversão do preço de varejo em atacado, o valor convertido de R$ 5,67 está inferior ao preço atacado R$ 6,46, com uma diferença de –12,23%.",
+        "O FGV IBRE, no presente relatório, apresenta justificativas para variações superiores a |10%| para os insumos relevantes em obras de infraestrutura, dessa forma, adotou-se o mesmo patamar como sinal de alerta para possíveis distorções de nível de preço entre o varejo convertido e o atacado. No caso do Aço CA 50, a divergência observada entre os preços para o estado de SP suscita análise sobre o preço do atacado na referência.",
+        "O FGV IBRE investigou o preço de atacado do SICRO na UF de SP e identificou que, em que pese o primeiro semestre de 2026 tenha sido caracterizado por um aumento nos custos da matéria prima e de transporte, o mercado observou uma retração nas vendas internas em decorrência dos elevados níveis de estoque acumulados após o aumento das tarifas para mercado externos em 2025. Diante disso, UFs nas quais o nível de estoque está elevado tendem a apresentar manutenção ou até redução dos preços praticados. Esse cenário contribuiu para a maior aproximação do atacado com o varejo convertido. Já o comportamento das coletas do varejo pode ser atribuído a volatilidade do mercado varejista, que apresenta maiores oscilações de preços muitas vezes decorrentes da variação de demanda. Nesse sentido, a diferença apresentada não foi considerada uma inconsistência.",
+        "Destaca-se que essa análise foi conduzida para todos os 15 insumos e para as 27 UFs com pesquisa do varejo. O FGV IBRE investigou os demais casos em que essa comparação excedeu os limites estabelecidos e as diferenças superiores a |10%| foram avaliadas detalhadamente, mas não foram identificados indícios de inconsistências nos preços coletados no varejo ou no atacado. Ressalta-se que PAC calcula a margem do comércio varejista das empresas pertencentes ao Cadastro Central de Empresas – CEMPRE, por Classificação Nacional de Atividades Econômicas – CNAE, a nível nacional. Isso significa que há uma margem única do comércio varejista para, por exemplo, a CNAE de Materiais de Construção, válida para todo o Brasil. Ou seja, não há abertura por insumo, nem por UF. Pela PAC, como a Brita 0 (pedrisco) e o Aço CA-50, por exemplo, são ambos materiais de construção, a margem do comércio varejista será a mesma para os dois.",
+        "Nesse sentido, as diferenças observadas podem decorrer da utilização no momento de uma margem única. Espera-se que a expansão da base de dados atingindo a robustez necessária para cálculo de uma margem da coleta, contribua para o aprimoramento contínuo das análises, aprofundando o entendimento das características dos locais e ampliando as demonstrações de balizamento ao longo das diversas etapas da precificação. Convém destacar que a série histórica de ao menos dois anos distintos será devidamente alcançada na referência de outubro de 2026, tendo em vista que a primeira referência entregue no âmbito do Contrato nº 647/2024 (SEI nº 19092578), foi outubro de 2024.",
+        "Conforme alinhamento entre FGV IBRE e DNIT, formalizado por intermédio do Ofício nº 151716/2026/CCR/CGCIT/DPP/DNIT SEDE (SEI nº 24818526), de 22 de maio de 2025, a entrega do Relatório Técnico Final contendo as margens obtidas a partir da série histórica de coletas está prevista para a data de 30 de novembro de 2026. Ressalta-se que o encaminhamento da demanda ocorrerá de forma autônoma, em processo específico, devendo sua tramitação ocorrer estritamente no Processo nº 50600.005561/2026-51."
+      ]
+    },
+    {
+      "id": "B065",
+      "secao": "Cobertura da pesquisa varejo",
+      "legenda": "Tabela 27 - Comparativo preço varejo convertido em atacado x atacado SICRO – SP julho/2026",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "É importante destacar que o esforço contínuo de mapeamento de empresas e ampliação do painel de respondentes da pesquisa de preços do varejo contribuiu para a manutenção de uma cobertura elevada na referência de {{REF_ATUAL_EXTENSO}}. Atualmente, das 405 posições esperadas para os 15 insumos de interesse, 332 estão preenchidas, o que corresponde a uma cobertura de cerca de 82%."
+      ]
+    },
+    {
+      "id": "B066",
+      "secao": "Cobertura da pesquisa varejo",
+      "legenda": "Tabela 27 - Comparativo preço varejo convertido em atacado x atacado SICRO – SP julho/2026",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "No que tange à constatação de valores zerados para determinados insumos e Unidades da Federação, como o item “M0014 – Aço CA 60 - kg” no PI, o FGV IBRE esclarece que tais registros decorrem da ausência de retorno válido por parte dos fornecedores consultados dentro do período de coleta da base de {{REF_ATUAL_EXTENSO}}.",
+        "Ainda que os contatos tenham sido realizados com empresas mapeadas e ativas, não houve, nesses casos específicos, o envio de dados compatíveis com os requisitos mínimos de validação, o que inviabilizou sua utilização no cálculo. Nessas situações, a metodologia preconiza a adoção de valor zerado, como forma de preservar a integridade técnica da base de dados e evitar a inclusão de informações inconsistentes, o que comprometeria a confiabilidade dos resultados apresentados.",
+        "Quanto ao insumo “M0003 – Aço CA 25 - kg” que apresentou ausência de preços no Amazonas, Tocantins, Piauí, Rio Grande do Norte e Mato Grosso importa destacar que durante o estudo do varejo o FGV IBRE já havia encontrado dificuldades de obtenção de preços desse insumo no âmbito do varejo, visto que para os respondentes o aço CA-25 não se configura como um insumo de prateleira com alta disponibilidade no mercado varejista."
+      ]
+    },
+    {
+      "id": "B067",
+      "secao": "Proposta de substituição de insumos na pesquisa do varejo",
+      "legenda": "Tabela 27 - Comparativo preço varejo convertido em atacado x atacado SICRO – SP julho/2026",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "O FGV IBRE realiza rotineiramente, durante o processo de expansão do mapeamento de respondentes para a ampliação de coletas, o entendimento da cadeia de fornecimento dos insumos pesquisados, incluindo as coletas da pesquisa varejo.",
+        "Esse entendimento é dinâmico e pode ser atualizado conforme são obtidas e estudadas novas informações, obviamente observando se não há influências pontuais, por exemplo, sazonalidade de comercialização de um insumo específico ou descontos e promoções.",
+        "Dessa forma, conforme explanado no Relatório de Resultados da referência outubro de 2025, encaminhado ao DNIT por meio da Carta FGV IBRE SIMG/798/2025 (SEI nº 23162362), de 29 de novembro de 2025, do mesmo modo que na reunião realizada em 4 de fevereiro de 2026 (SEI nº 23964622), o FGV IBRE apresentou ao DNIT nova proposição destinada ao alinhamento para fins de substituição dos insumos constantes da lista do varejo, abordando: (1) manutenção do item “M0003 – Aço CA 25” na pesquisa de preços do varejo, (2) proposta de substituição dos insumos “M0193 – Brita 3” e “M0808 – Brita 4” e (3) proposição para que os insumos pertencentes à família das areias passem a apresentar preços uniformizados independentemente da granulometria",
+        "Por intermédio da Carta FGV IBRE SIMG/162/2026 (SEI nº 23857743), de 13 de fevereiro de 2026, o FGV IBRE formalizou as proposições apresentadas na reunião supracitada.",
+        "Considerando o Ofício nº 124739/2026/CCR/CGCIT/DPP/DNIT SEDE (SEI nº 24577501), de 29 de {{REF_ANTERIOR_EXTENSO}}, no qual o DNIT deliberou sobre as proposições apresentadas na Carta FGV IBRE SIMG/162/2026 (SEI nº 23857743), de 13 de fevereiro de 2026, vetando a substituições propostas.",
+        "Diante do exposto, o FGV IBRE informa que, no âmbito da pesquisa do varejo, não procederá com a substituição dos insumos “M0193 – Brita 3” e “M0808 – Brita 4”, bem como com a apresentação de preços uniformizados independentemente da granulometria para os insumos pertencentes à família das areias. Ressalta-se que os esforços de pesquisa e manutenção do banco de dados dos referidos insumos serão mantidos até a consolidação da série histórica e a consequente elaboração do relatório técnico crítico final."
+      ]
+    },
+    {
+      "id": "B068",
+      "secao": "Ocorrências de diferença acima de |25%|",
+      "legenda": "Tabela 36 - Análises para itens com diferença acima de |25%| (10/10)",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Cabe ressaltar que das 39 ocorrências de diferenças acima de |25%|, 26 delas compreendem insumos de origem natural, os quais tem influência forte de fatores regionais no nível de preços. Além disso, há um número considerável de situações em que a análise foi limitada devido a divergências metodológicas na formação dos preços, como localidade, ganho de escala e data-base."
+      ]
+    },
+    {
+      "id": "B069",
+      "secao": "Desdobramentos das análises",
+      "legenda": "Tabela 36 - Análises para itens com diferença acima de |25%| (10/10)",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Um caso positivo que o FGV IBRE ressalta é sobre a família de Gabiões. Em referências anteriores, foram identificados indícios de que os preços dos insumos pertencentes à família dos gabiões se encontravam em patamar superior aos valores efetivamente praticados no mercado. Tais evidências decorreram, principalmente, dos balizamentos realizados com base em compras públicas executadas no território nacional. Tal comportamento foi corroborado com o recebimento das bases de cotações.",
+        "Diante desse cenário, desde a referência de janeiro/2026, foi conduzido um esforço adicional voltado à ampliação da base de respondentes da pesquisa, bem como ao aprofundamento das validações junto aos fornecedores já cadastrados, especialmente no que se refere ao nível de preços reportado ao FGV IBRE.",
+        "Adicionalmente, com a implementação do balizamento por meio de cotações na referência anterior abril/2026, tornou-se possível incorporar uma nova fonte de dados ao processo analítico, a qual contribuiu para reforçar e fundamentar a tomada de decisão quanto ao nível de preços considerado mais aderente às condições de mercado para a família dos gabiões.",
+        "A partir das novas coletas realizadas e da atualização das informações de mercado, foi possível revisar o nível de preços dos itens da família, sendo parte dessa variação incorporada e repassada aos respectivos preços de referência, conforme justificado no arquivo DNIT_II.01.4_{{ORDINAL}}ºRR_{{NUM_RELATORIO}}_Variacao-CCUs-SICRO.",
+        "Diante deste novo cenário, os gabiões, que na referência de janeiro/2026 estariam na faixa de diferença acima de 25% em módulo quando comparado às cotações, passaram a apresentar uma diferença aceitável no balizamento."
+      ]
+    },
+    {
+      "id": "B070",
+      "secao": "Conclusão acerca das análises das cotações",
+      "legenda": "Tabela 36 - Análises para itens com diferença acima de |25%| (10/10)",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Frente à conceituação apresentada neste capítulo, o FGV IBRE conclui que o recebimento dessas informações representa uma nova camada de aprimoramento do processo de formação de preços referenciais, que confere maior qualidade ao trabalho, já tendo proporcionado resultados relevantes, como observado no caso da família de gabiões.",
+        "Cabe destacar, contudo, os desafios identificados ao longo desse processo, tanto em razão das lacunas informacionais verificadas nas cotações encaminhadas, essenciais para assegurar a comparabilidade dos dados, quanto pela reduzida quantidade de observações nas amostras, fator que limita a aplicação de métodos estatísticos mais robustos e a garantia de confiabilidade e representatividade dos dados, e também a data-base das cotações utilizadas, cujos períodos de coleta compreendem julho de 2022 a maio de 2025.",
+        "Por se tratar de um procedimento recente, o FGV IBRE mantém postura aberta e colaborativa para discutir e alinhar as premissas adotadas, visando ao contínuo aprimoramento metodológico e ao fortalecimento da robustez dos resultados apresentados."
+      ]
+    },
+    {
+      "id": "B071",
+      "secao": "ESFORÇO DE PESQUISA",
+      "legenda": "Tabela 36 - Análises para itens com diferença acima de |25%| (10/10)",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Para todos os insumos liderados do SICRO, no mercado produtor ou distribuidor, para os estados de São Paulo e Rio de Janeiro, foram mapeadas 842 e 722 empresas, respectivamente, retornando o quantitativo de 542 sugestões de preços para a referência de {{REF_ATUAL_EXTENSO}}. Além disso, atualmente existem 1.365 preços compondo o banco de dados do FGV IBRE.",
+        "Para as famílias de insumos de aço, areia, brita e cimento, no mercado produtor e distribuidor, para as 27 Unidades da Federação, foram mapeadas 1.184 empresas, resultando em 663 sugestões de preços para a referência de {{REF_ATUAL_EXTENSO}}. Além disso, atualmente existem 1.050 preços compondo o banco de dados do FGV IBRE.",
+        "Para as famílias de insumos de aço, areia, brita e cimento, na condição de comercialização de varejo, para as 27 Unidades da Federação, foram mapeadas 2.647 empresas, resultando em 4.109 sugestões de preços para a referência de {{REF_ATUAL_EXTENSO}}.",
+        "E para todos os insumos do SICRO classificados como líderes de família, no mercado produtor ou distribuidor, para as 27 Unidades da Federação, foram atualmente mapeadas 4.335 empresas, retornando o quantitativo de 3.536 sugestões de preços para a referência de {{REF_ATUAL_EXTENSO}}. Além disso, atualmente existem 7.807 preços compondo o banco de dados do FGV IBRE."
+      ]
+    },
+    {
+      "id": "B072",
+      "secao": "MANIFESTAÇÃO SOBRE PARECERES ANTERIORES",
+      "legenda": "Tabela 36 - Análises para itens com diferença acima de |25%| (10/10)",
+      "estilo": "20_Desenvolvimento-IBRE/SAPR",
+      "paragrafos": [
+        "Considerando o Contrato nº 647/2024 (SEI nº 19092578), firmado entre a FGV, por intermédio do seu IBRE, e o DNIT, cujo objeto é a prestação de serviços técnicos especializados referentes a: (I) manutenção dos sistemas de custos do DNIT; (II) realização da pesquisa nacional de preços de insumos; (III) cálculo dos índices de reajustamento de obras pelos quais o DNIT responde; (IV) desenvolvimento de estudos especiais na área de custos; e (V) apoio técnico à Coordenação-Geral de Custos de Infraestrutura de Transportes – CGCIT na execução de suas atribuições relacionadas ao referido instrumento contratual.",
+        "Considerando a Carta FGV IBRE SIMG/495/2026 (SEI nº 24063213), de 9 de junho de 2026, por meio da qual o FGV IBRE encaminhou o 2º Relatório de Resultados nº 14-05/2026, contendo a pesquisa de preços referenciais dos insumos do Sistema de Custos Referenciais de Obras – SICRO e da Tabela de Preços de Consultoria – TPC do mês de {{REF_ANTERIOR_EXTENSO}}, conforme previsto em cronograma.",
+        "Considerando o Ofício nº 185702/2026/CCR/CGCIT/DPP/DNIT SEDE (SEI nº 24995740) datado de 18 de junho de 2026 e recepcionado em 18 de junho de 2026, no qual o DNIT apresentou a análise da pesquisa de preços referenciais da TPC do mês de referência de {{REF_ANTERIOR_EXTENSO}}, solicitando manifestação do FGV IBRE quanto a questionamentos pontuais, delimitando impreterivelmente o dia 22 de junho de 2026 como prazo de resposta.",
+        "Em face do exposto, o FGV IBRE apresenta manifestação quanto aos apontamentos exarados.",
+        "TPC e SICRO - Questionamento de divergência de valores entre insumos equivalentes:",
+        "Recomenda-se que a FGV proceda à verificação dos valores apresentados para os insumos que possuem correspondência direta com o SICRO e que apresentam divergências em relação àquela base, ou, alternativamente, apresente justificativa técnica que fundamente as diferenças observadas, de modo a assegurar a consistência entre as bases referenciais.",
+        "Manifestação do FGV IBRE:",
+        "Em atendimento ao apontamento, foi realizada a revisão dos 13 insumos da TPC que possuem correspondência direta com o SICRO. A partir dessa análise, foram identificadas diferenças em seis insumos, a saber E8533, E8887, E8888, E8889, E8890 e E8891.",
+        "A avaliação dos casos indicou que os valores inicialmente carregados para esses insumos na TPC correspondiam aos preços observados na Unidade da Federação – UF de origem da coleta, sem a incorporação do frete metodológico até o estado de São Paulo, parcela considerada na composição dos respectivos preços referenciais do SICRO. Em razão dessa particularidade, os valores registrados na TPC apresentavam diferenças em relação aos valores de referência adotados pelo SICRO.",
+        "Após a identificação da origem das diferenças observadas, os valores dos insumos foram revisados e ajustados, passando a refletir integralmente a composição considerada pelo SICRO para o estado de São Paulo nos respectivos equivalentes.",
+        "Dessa forma, os apontamentos foram saneados, assegurando a compatibilidade entre os valores da TPC e aqueles constantes na base referencial utilizada como fonte de equivalência.",
+        "Diante desse encadeamento, registra-se que não houve demanda por manifestação adicional do FGV IBRE quanto a materiais e equipamentos no âmbito da referida referência."
+      ]
+    }
+  ],
+  "campos_em_texto_fixo": {
+    "julho de 2026": 11,
+    "DNIT_II.09.0_2ºOrigem-Precos-SICRO-Ref-Jul.2026": 2,
+    "DNIT_II.01.4_2ºRR_15-08.2026_Variacao-CCUs-SICRO": 2,
+    ",": 2,
+    ".": 2,
+    "DNIT_II.01.4_2ºRR_15-08.2026_Variacao-CCUs-SICRO.xlsx": 2,
+    "2º Relatório de Resultados": 1,
+    "Julho de 2026": 1,
+    "Na referência de julho de 2026": 1,
+    "em todas as UFs com a sigla “PRZ”. No arquivo": 1,
+    "DNIT_II.08.0_2ºResultado-Final-SICRO-Ref-Jul.2026": 1,
+    "referência de julho de 2026": 1,
+    "referência": 1,
+    "Foram analisadas as variações dos 4": 1,
+    "Na atual referência, julho de 2026, há 129 materiais": 1,
+    ", com a sigla “PRE” em todas as UFs.": 1,
+    "O arquivo": 1,
+    "Foram analisadas as variações dos 10": 1,
+    "Gráfico": 1,
+    "63": 1,
+    "- Comparação atacado x varejo SICRO para o “M0004 – Aço CA 50 – kg” em julho/2026": 1,
+    "Tabela": 1,
+    "27": 1,
+    "- Comparativo preço varejo convertido em atacado x atacado SICRO – SP": 1,
+    "julho/2026": 1,
+    "DNIT_II.01.5_2ºRR_": 1,
+    "15-08": 1,
+    ".2026_Resultado-Varejo-SICRO": 1,
+    "Para o mês de referência de julho de 2026": 1,
+    "Conclusão": 1,
+    "acerca das análises das cotações": 1
+  }
+}

@@ -3,3 +3,5 @@ pandas
 openpyxl
 matplotlib
 python-docx
+# base historica (opcional fora do Streamlit in Snowflake)
+snowflake-snowpark-python[pandas]

@@ -96,6 +96,16 @@ def selecionar_frente() -> str:
     )
 
 
+def selecionar_area() -> str:
+    """Relatórios (fluxo do analista) ou Administração (carga no Snowflake)."""
+    return st.sidebar.radio(
+        "Área",
+        options=["relatorios", "admin"],
+        format_func=lambda a: "Relatórios" if a == "relatorios" else "⚙️ Administração (carga no Snowflake)",
+        key="area",
+    )
+
+
 def cabecalho_principal(titulo: str) -> None:
     st.markdown(f'<div class="fgv-titulo">{titulo}</div>', unsafe_allow_html=True)
     st.markdown('<div class="fgv-regua"></div>', unsafe_allow_html=True)
@@ -108,6 +118,14 @@ def cabecalho_principal(titulo: str) -> None:
 def main() -> None:
     aplicar_estilo()
     cabecalho_lateral()
+
+    area = selecionar_area()
+    st.sidebar.divider()
+
+    if area == "admin":
+        cabecalho_principal("Administração")
+        importlib.import_module("admin_carga_st").render()
+        return
 
     chave = selecionar_frente()
     frente = FRENTES[chave]

@@ -124,3 +124,54 @@ def geraveis(caminho_template: str = TEMPLATE) -> list:
 def pendentes(caminho_template: str = TEMPLATE) -> list:
     """Os graficos que dependem de dado que ainda nao chegou."""
     return [g for g in catalogo(caminho_template) if not g.geravel]
+
+
+# ──────────────────────────────────────────────────────────────
+# TABELAS E BLOCOS DE TEXTO (gerados por gerar_template_docx.py)
+# ──────────────────────────────────────────────────────────────
+_RE_TABELA = re.compile(r"^Tabela\s+(\d+)\s*[-–]\s*(.*)$")
+PASTA_TEXTOS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "materiais", "textos")
+
+
+@lru_cache(maxsize=1)
+def tabelas(caminho_template: str = TEMPLATE) -> tuple:
+    """(numero, titulo) de cada tabela do template, pela legenda, sem repetir.
+
+    Nenhuma tabela e preenchida pelo app ainda: todas mantem os valores da
+    referencia de origem do template ate a planilha das tabelas ser mapeada.
+    """
+    from docx import Document
+
+    vistos, lista = set(), []
+    for paragrafo in Document(caminho_template).paragraphs:
+        if paragrafo.style.name not in ESTILO_LEGENDA:
+            continue
+        m = _RE_TABELA.match(paragrafo.text.strip())
+        if not m:
+            continue
+        numero = int(m.group(1))
+        if numero in vistos:
+            continue
+        vistos.add(numero)
+        lista.append((numero, re.sub(r"\s*\(\d+/\d+\)$", "", m.group(2).strip())))
+    return tuple(lista)
+
+
+@lru_cache(maxsize=4)
+def blocos_texto(referencia: str = None) -> dict:
+    """Catalogo dos blocos editaveis e seus textos na referencia de origem.
+
+    Sem `referencia`, usa o arquivo mais recente de materiais/textos. Devolve
+    o json como dicionario ({} quando nao ha catalogo).
+    """
+    import json
+
+    if not os.path.isdir(PASTA_TEXTOS):
+        return {}
+    arquivos = sorted(a for a in os.listdir(PASTA_TEXTOS) if a.startswith("blocos_") and a.endswith(".json"))
+    if referencia:
+        arquivos = [a for a in arquivos if a == f"blocos_{referencia}.json"]
+    if not arquivos:
+        return {}
+    with open(os.path.join(PASTA_TEXTOS, arquivos[-1]), encoding="utf-8") as f:
+        return json.load(f)
