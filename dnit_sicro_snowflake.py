@@ -48,27 +48,49 @@ def nome_view(chave: str) -> str:
 
 
 _sessao = None
+_erros_conexao: list[str] = []
 
 
 def sessao():
-    """Sessao Snowpark ativa (SiS) ou local; None quando nao ha como conectar."""
+    """Sessao Snowpark, na primeira forma que funcionar:
+
+      1. `get_active_session()`: dentro do Streamlit in Snowflake, sem credencial;
+      2. `st.connection("snowflake")`: local, com [connections.snowflake] em
+         .streamlit/secrets.toml;
+      3. conexao nomeada em ~/.snowflake/connections.toml
+         (SNOWFLAKE["connection_name"]).
+
+    Devolve None quando nenhuma funciona; `motivo_sem_sessao()` diz por que.
+    """
     global _sessao
     if _sessao is not None:
         return _sessao
+    _erros_conexao.clear()
     try:
         from snowflake.snowpark.context import get_active_session
         _sessao = get_active_session()
         return _sessao
-    except Exception:
-        pass
+    except Exception as erro:
+        _erros_conexao.append(f"get_active_session: {erro}")
+    try:
+        import streamlit as st
+        _sessao = st.connection("snowflake").session()
+        return _sessao
+    except Exception as erro:
+        _erros_conexao.append(f"st.connection('snowflake'): {erro}")
     try:
         from snowflake.snowpark import Session
         _sessao = Session.builder.config(
             "connection_name", SNOWFLAKE["connection_name"]
         ).create()
         return _sessao
-    except Exception:
-        return None
+    except Exception as erro:
+        _erros_conexao.append(f"connections.toml '{SNOWFLAKE['connection_name']}': {erro}")
+    return None
+
+
+def motivo_sem_sessao() -> str:
+    return "\n".join(_erros_conexao)
 
 
 def _exigir():
@@ -79,7 +101,13 @@ def _exigir():
         )
     s = sessao()
     if s is None:
-        raise SnowflakeNaoConfigurado("Nao foi possivel abrir uma sessao Snowflake.")
+        raise SnowflakeNaoConfigurado(
+            "Nao foi possivel abrir uma sessao Snowflake. Fora do Streamlit in "
+            "Snowflake, crie .streamlit/secrets.toml com [connections.snowflake] "
+            "(account, user, password ou authenticator, role, warehouse, database, "
+            "schema) ou uma conexao em ~/.snowflake/connections.toml. Tentativas:\n"
+            + motivo_sem_sessao()
+        )
     return s
 
 

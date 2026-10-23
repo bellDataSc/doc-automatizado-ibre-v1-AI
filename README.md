@@ -92,7 +92,9 @@ As dependências são `streamlit`, `pandas`, `openpyxl`, `matplotlib` e
 `python-docx`. Não há `docxtpl`, `geopandas` nem `shapely`: o template é
 preenchido com `python-docx` e o mapa do Brasil é desenhado com polígonos
 de `dados/uf_brasil.json`. A sessão Snowflake vem de `get_active_session()`
-no SiS; localmente, da conexão nomeada em `connections.toml`.
+no SiS; localmente, de `.streamlit/secrets.toml` (`[connections.snowflake]`,
+modelo em `.streamlit/secrets.toml.exemplo`) ou da conexão nomeada em
+`~/.snowflake/connections.toml`. Sem nenhuma das três, a tela mostra o motivo.
 
 ## Snowflake
 
