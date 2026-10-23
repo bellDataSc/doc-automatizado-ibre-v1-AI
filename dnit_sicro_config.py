@@ -37,17 +37,34 @@ FRENTES = {
 # ──────────────────────────────────────────────────────────────
 # SNOWFLAKE — base historica das referencias
 # ──────────────────────────────────────────────────────────────
-# Os nomes abaixo sao preenchidos DEPOIS que o Cortex Code criar a estrutura
-# e devolver schema, tabelas e colunas (ver docs/PROMPT_CORTEX_CARGA.md).
-# Enquanto estiverem vazios, o app trabalha so com as planilhas enviadas e a
-# area de Administracao fica bloqueada.
+# Nomes devolvidos pelo Cortex Code (RESUMO_BASE_HISTORICA_SNOWFLAKE.md,
+# 22/10/2026). Todos os objetos tem o prefixo SICRO_HIST_; as tabelas antigas
+# SICRO_* nao sao usadas pelo app. Deixar "database" ou "schema" vazios
+# desliga a base e o app trabalha so com as planilhas enviadas.
 SNOWFLAKE = {
-    "database": "",
-    "schema": "",
-    # tabela em formato longo: 1 linha por referencia x codigo x UF
-    "tabela_precos": "",
-    # tabela com 1 linha por referencia carregada (controle de duplicidade)
-    "tabela_referencias": "",
+    "database": "BASES_SAPR",
+    "schema": "AGENTE_SAPR",
+    # 1 linha por referencia x codigo x UF (preco e sigla de origem)
+    "tabela_precos": "SICRO_HIST_PRECO_UF",
+    # 1 linha por referencia carregada (controle de duplicidade)
+    "tabela_referencias": "SICRO_HIST_CONTROLE_REFERENCIA",
+    # cadastro da aba "Gerenciamento Atual" da planilha das tabelas do RR
+    "tabela_cadastro": "SICRO_HIST_CADASTRO",
+    # listas fixas de relevantes (LISTA = T09, T22, T23)
+    "tabela_lista_relevante": "SICRO_HIST_LISTA_RELEVANTE",
+    # stage com uma pasta por referencia (AAAA-MM/) e a procedure que a carrega
+    "stage_entregas": "SICRO_HIST_STG_ENTREGAS",
+    "procedure_carga": "SICRO_HIST_SP_CARREGAR_REFERENCIA",
+    # views que ja recalculam as tabelas do relatorio
+    "views": {
+        "serie_hist": "SICRO_HIST_VW_SERIE_HIST",
+        "amplitude": "SICRO_HIST_VW_AMPLITUDE",
+        "variacao": "SICRO_HIST_VW_VARIACAO",
+        "tab_faixas": "SICRO_HIST_VW_TAB_FAIXAS",
+        "tab_t19_t20": "SICRO_HIST_VW_TAB_T19_T20",
+        "tab_variacao_item": "SICRO_HIST_VW_TAB_VARIACAO_ITEM",
+        "tab_var_resumo": "SICRO_HIST_VW_TAB_VAR_RESUMO",
+    },
     # nomes das colunas na tabela de precos
     "colunas": {
         "referencia": "REFERENCIA",   # AAAA-MM

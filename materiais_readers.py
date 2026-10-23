@@ -56,6 +56,9 @@ class BaseMateriais:
     preco: ResultadoLeitura
     origem: ResultadoLeitura
     avisos: list[str] = field(default_factory=list)
+    # referencia, codigo, uf, preco das referencias anteriores (base historica),
+    # usado no eixo do tempo dos graficos de evolucao; None sem a base
+    historico: pd.DataFrame = None
 
     @property
     def total_itens(self) -> int:

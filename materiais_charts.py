@@ -41,6 +41,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.figure import Figure
 from matplotlib.patches import Polygon
 from matplotlib.ticker import FuncFormatter
+import pandas as pd
 
 from materiais_catalogo import AMPLITUDE, EVOLUCAO, ORDENAMENTO, catalogo
 from materiais_config import UFS, UFS_POR_REGIAO
@@ -302,18 +303,57 @@ def figura_amplitude(base, codigo: str):
 
 
 # ──────────────────────────────────────────────────────────────
+# EIXO DO TEMPO DA EVOLUCAO
+# ──────────────────────────────────────────────────────────────
+_MES_ABREV = ["jan", "fev", "mar", "abr", "mai", "jun",
+              "jul", "ago", "set", "out", "nov", "dez"]
+
+
+def _rotulo_referencia(codigo: str) -> str:
+    """'2026-07' -> 'jul/2026'."""
+    ano, mes = codigo.split("-")
+    return f"{_MES_ABREV[int(mes) - 1]}/{ano}"
+
+
+def _var_pct(serie: list) -> str:
+    """Var.% da ultima referencia contra a anterior; '—' sem as duas."""
+    if len(serie) < 2:
+        return "—"
+    atual, anterior = serie[-1], serie[-2]
+    if atual != atual or anterior != anterior or not anterior:
+        return "—"
+    return f"{br((atual / anterior - 1) * 100, 2)}%"
+
+
+# ──────────────────────────────────────────────────────────────
 # GRAFICO DE EVOLUCAO  (Graficos 1 a 41, 48 a 50)
 # ──────────────────────────────────────────────────────────────
 def figura_evolucao(base, codigo: str, referencia: str = "referência atual"):
     """Cinco paineis de serie historica, com a tabela MAX/MED/MIN embaixo.
 
-    Nesta versao ha uma unica referencia no eixo do tempo, entao cada UF
-    aparece como um ponto e a coluna Var.% fica vazia. A estrutura ja e a
-    do relatorio; ligar a base historica e acrescentar colunas ao eixo X.
+    Com `base.historico` (referencias anteriores lidas da base Snowflake), o
+    eixo do tempo traz uma coluna por referencia e a legenda mostra a Var.% de
+    cada UF: preco atual / preco anterior - 1, a mesma regra da aba Serie Hist.
+    e da view SICRO_HIST_VW_VARIACAO; sem preco nas duas, fica "—".
+    Sem historico, cada UF aparece como um ponto e a Var.% fica vazia.
     """
     ufs, valores, _descricao, unidade = _serie_do_item(base, codigo)
-    preco_por_uf = dict(zip(ufs, valores))
-    referencias = [referencia]
+    historico = getattr(base, "historico", None)
+    if historico is not None and not historico[historico["codigo"] == codigo].empty:
+        recorte = historico[historico["codigo"] == codigo]
+        codigos_ref = sorted(recorte["referencia"].unique())
+        tabela = recorte.pivot_table(index="uf", columns="referencia", values="preco",
+                                     aggfunc="first")
+        series_uf = {
+            uf: [float(tabela.at[uf, r]) if uf in tabela.index and r in tabela.columns
+                 and pd.notna(tabela.at[uf, r]) else float("nan") for r in codigos_ref]
+            for uf in ufs
+        }
+        referencias = [_rotulo_referencia(r) for r in codigos_ref]
+    else:
+        series_uf = {uf: [v] for uf, v in zip(ufs, valores)}
+        referencias = [referencia]
+    preco_por_uf = {uf: serie[-1] for uf, serie in series_uf.items()}
 
     figura = Figure(figsize=(11.5, 14.0), dpi=110)
     figura.patch.set_facecolor("white")
@@ -343,13 +383,13 @@ def figura_evolucao(base, codigo: str, referencia: str = "referência atual"):
         ax = figura.add_subplot(grade[indice])
         ufs_painel = [uf for regiao in regioes for uf in UFS_POR_REGIAO[regiao]]
         ufs_painel = [uf for uf in ufs_painel if uf in preco_por_uf]
-        serie = [preco_por_uf[uf] for uf in ufs_painel]
+        serie = [v for uf in ufs_painel for v in series_uf[uf] if v == v]
 
         for posicao, uf in enumerate(ufs_painel):
             estilo = SERIES_EVOLUCAO[posicao % len(SERIES_EVOLUCAO)]
-            ax.plot(range(len(referencias)), [preco_por_uf[uf]] * len(referencias),
+            ax.plot(range(len(referencias)), series_uf[uf],
                     color=estilo["cor"], marker=estilo["marcador"], markersize=6,
-                    linewidth=1.8, label=f"{uf}   |   —")
+                    linewidth=1.8, label=f"{uf}   |   {_var_pct(series_uf[uf])}")
 
         preparar(ax, rotulo, serie)
         ax.legend(loc="center left", bbox_to_anchor=(1.02, 0.5),
@@ -360,20 +400,24 @@ def figura_evolucao(base, codigo: str, referencia: str = "referência atual"):
     # Painel MAX / MED / MIN
     maximos, medias, minimos = [], [], []
     uf_max, uf_min = [], []
-    for _ in referencias:
-        serie = [preco_por_uf[uf] for uf in ufs]
-        maximos.append(max(serie))
-        minimos.append(min(serie))
-        medias.append(sum(serie) / len(serie))
-        uf_max.append(ufs[serie.index(max(serie))])
-        uf_min.append(ufs[serie.index(min(serie))])
+    for posicao_ref in range(len(referencias)):
+        pares = [(series_uf[uf][posicao_ref], uf) for uf in ufs
+                 if series_uf[uf][posicao_ref] == series_uf[uf][posicao_ref]]
+        if not pares:
+            maximos.append(float("nan")); minimos.append(float("nan"))
+            medias.append(float("nan")); uf_max.append(""); uf_min.append("")
+            continue
+        maior, menor = max(pares), min(pares)
+        maximos.append(maior[0]); uf_max.append(maior[1])
+        minimos.append(menor[0]); uf_min.append(menor[1])
+        medias.append(sum(v for v, _ in pares) / len(pares))
 
     ax = figura.add_subplot(grade[4])
     for nome, serie in (("MAX", maximos), ("MED", medias), ("MIN", minimos)):
         ax.plot(range(len(referencias)), serie, color=CORES_MAX_MED_MIN[nome],
                 marker=MARCADORES_MAX_MED_MIN[nome], markersize=8, linewidth=2.2,
                 label=f"{nome} | —")
-    preparar(ax, "MAX  MED  MIN", maximos + minimos)
+    preparar(ax, "MAX  MED  MIN", [v for v in maximos + minimos if v == v])
     ax.legend(loc="center left", bbox_to_anchor=(1.02, 0.5),
               title="Legenda: UF e Var.%", frameon=False, fontsize=9,
               title_fontproperties={"weight": "bold", "size": 10},
@@ -399,10 +443,10 @@ def figura_evolucao(base, codigo: str, referencia: str = "referência atual"):
 
     conteudo = [
         ("MAX", [f"{br(v, 2)}\n{SIGLA_REGIAO.get(REGIAO_DA_UF.get(u, ''), '')}"
-                 for v, u in zip(maximos, uf_max)]),
-        ("MED", [br(v, 2) for v in medias]),
+                 if v == v else "—" for v, u in zip(maximos, uf_max)]),
+        ("MED", [br(v, 2) if v == v else "—" for v in medias]),
         ("MIN", [f"{br(v, 2)}\n{SIGLA_REGIAO.get(REGIAO_DA_UF.get(u, ''), '')}"
-                 for v, u in zip(minimos, uf_min)]),
+                 if v == v else "—" for v, u in zip(minimos, uf_min)]),
     ]
     for linha, (nome, celulas) in enumerate(conteudo, start=1):
         y = linhas_y[linha]

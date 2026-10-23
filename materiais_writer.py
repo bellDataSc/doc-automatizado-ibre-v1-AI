@@ -10,14 +10,14 @@ graficos na ordem da entrega. Este modulo:
   2. escreve, em cada bloco de texto editavel (bookmark TXT_<id>_P<n>), o
      texto decidido pelo analista na tela;
   3. coloca cada grafico conferido no paragrafo de figura que vem logo
-     depois da legenda correspondente.
+     depois da legenda correspondente;
+  4. preenche as tabelas que a base do Snowflake sustenta (materiais_tabelas),
+     mantendo a formatacao das linhas do template.
 
-O casamento dos graficos e pela LEGENDA ("Grafico 12 - ..."), nao pela
-posicao da imagem no documento: assim um grafico que nao pode ser gerado nao
-desloca os demais.
-
-O que este modulo NAO faz ainda: preencher as tabelas. Elas ficam com os
-valores do template ate a planilha das tabelas ser mapeada.
+O casamento dos graficos e das tabelas e pela LEGENDA ("Grafico 12 - ...",
+"Tabela 10 - ..."), nao pela posicao no documento: assim um grafico que nao
+pode ser gerado nao desloca os demais. As tabelas que a base nao sustenta
+ficam com os valores do template.
 """
 
 from __future__ import annotations
@@ -63,6 +63,9 @@ class ResultadoRelatorio:
     marcadores_restantes: list = field(default_factory=list)
     blocos_escritos: list = field(default_factory=list)
     blocos_sem_bookmark: list = field(default_factory=list)
+    tabelas_preenchidas: list = field(default_factory=list)
+    tabelas_sem_slot: list = field(default_factory=list)
+    tabelas_avisos: list = field(default_factory=list)
 
 
 # ──────────────────────────────────────────────────────────────
@@ -343,6 +346,246 @@ def inserir_graficos(documento, figuras_por_numero: dict, dpi: int = 200) -> tup
 
 
 # ──────────────────────────────────────────────────────────────
+# TABELAS
+# ──────────────────────────────────────────────────────────────
+_RE_LEGENDA_TABELA = re.compile(r"^Tabela\s+(\d+)\s*[-–]")
+
+
+def _celulas_unicas(linha):
+    """Celulas da linha sem repetir as mescladas horizontalmente."""
+    saida, anterior = [], None
+    for celula in linha.cells:
+        if celula._tc is anterior:
+            continue
+        anterior = celula._tc
+        saida.append(celula)
+    return saida
+
+
+def _texto_celula(celula) -> str:
+    return " ".join(p.text for p in celula.paragraphs).strip()
+
+
+def _escrever_celula(celula, texto: str) -> None:
+    """Mantem o primeiro paragrafo e o primeiro run (formatacao); apaga o resto."""
+    paragrafos = celula._tc.findall(qn("w:p"))
+    for p in paragrafos[1:]:
+        celula._tc.remove(p)
+    _escrever_texto_no_paragrafo(paragrafos[0], texto)
+
+
+def tabelas_do_template(documento) -> dict:
+    """{numero: [Table, ...]} na ordem do documento, pela legenda.
+
+    A legenda normalmente vem antes da tabela. A excecao e a tabela 15, cuja
+    legenda vem depois: uma legenda sem tabela a seguir reivindica a tabela
+    imediatamente anterior quando esta ja tem outra dona.
+    """
+    from docx.table import Table
+    from docx.text.paragraph import Paragraph
+
+    sequencia = []        # ("leg", numero) ou ("tbl", Table)
+    for filho in documento.element.body.iterchildren():
+        if filho.tag == qn("w:p"):
+            par = Paragraph(filho, documento)
+            if par.style.name == ESTILO_LISTA:
+                continue
+            m = _RE_LEGENDA_TABELA.match(par.text.strip())
+            if m:
+                sequencia.append(("leg", int(m.group(1)), filho))
+        elif filho.tag == qn("w:tbl"):
+            sequencia.append(("tbl", Table(filho, documento), filho))
+
+    donos = []            # numero de cada tabela, na ordem
+    atual = None
+    for i, (tipo, valor, _el) in enumerate(sequencia):
+        if tipo == "leg":
+            atual = valor
+            seguinte = next((t for t, _v, _e in sequencia[i + 1:i + 2]), None)
+            if seguinte != "tbl" and i > 0 and sequencia[i - 1][0] == "tbl":
+                anterior = sequencia[i - 1][1]
+                if donos and donos[-1][0] != valor and donos[-1][0] in [d[0] for d in donos[:-1]]:
+                    donos[-1] = (valor, anterior, sequencia[i - 1][2])
+        else:
+            donos.append((atual, valor, _el))
+
+    saida: dict = {}
+    for numero, tabela, _el in donos:
+        if numero is not None:
+            saida.setdefault(numero, []).append(tabela)
+    return saida
+
+
+def linhas_da_tabela(tabela) -> list:
+    return [[_texto_celula(c) for c in _celulas_unicas(l)] for l in tabela.rows]
+
+
+def _remover_parte(tabela) -> None:
+    """Remove uma parte vazia: a tabela, a legenda antes e o 'Fonte' depois."""
+    from docx.text.paragraph import Paragraph
+
+    elemento = tabela._tbl
+    anterior = elemento.getprevious()
+    proximo = elemento.getnext()
+    pai = elemento.getparent()
+    if anterior is not None and anterior.tag == qn("w:p") and \
+            _RE_LEGENDA_TABELA.match(Paragraph(anterior, None).text.strip()):
+        pai.remove(anterior)
+    if proximo is not None and proximo.tag == qn("w:p") and \
+            Paragraph(proximo, None).text.strip().lower().startswith("fonte"):
+        pai.remove(proximo)
+    pai.remove(elemento)
+
+
+def _ajustar_linhas(tabela, inicio: int, fim: int, quantidade: int) -> list:
+    """Deixa exatamente `quantidade` linhas entre inicio e fim (exclusivo).
+
+    Clona a primeira linha do intervalo para crescer; remove do fim para
+    encolher. Devolve as linhas (python-docx Row) do intervalo.
+    """
+    trs = [l._tr for l in tabela.rows]
+    modelo = copy.deepcopy(trs[inicio])
+    existentes = trs[inicio:fim]
+    while len(existentes) < quantidade:
+        novo = copy.deepcopy(modelo)
+        existentes[-1].addnext(novo)
+        existentes.append(novo)
+    for tr in existentes[quantidade:]:
+        tr.getparent().remove(tr)
+    return list(tabela.rows)[inicio:inicio + quantidade]
+
+
+def _limpar_sombreamento(celula) -> None:
+    """Tira o fundo da celula. Nas tabelas item x UF do template as celulas
+    vem pintadas (vermelho/azul) sem regra consistente; como o valor muda,
+    a cor antiga nao pode ficar."""
+    tcpr = celula._tc.find(qn("w:tcPr"))
+    if tcpr is None:
+        return
+    for shd in tcpr.findall(qn("w:shd")):
+        tcpr.remove(shd)
+
+
+def _preencher_linhas(partes: list, linhas: list, cabecalho: int = 1,
+                      limpar_fundo_desde: int = None) -> None:
+    """Distribui `linhas` pelas partes da tabela, parte a parte, mantendo a
+    capacidade de cada uma; a ultima parte cresce ou encolhe; partes que
+    ficam vazias sao removidas."""
+    restantes = list(linhas)
+    for indice, tabela in enumerate(partes):
+        ultima = indice == len(partes) - 1
+        capacidade = len(tabela.rows) - cabecalho
+        lote = restantes if ultima else restantes[:capacidade]
+        restantes = restantes[len(lote):]
+        if not lote:
+            _remover_parte(tabela)
+            continue
+        for linha, valores in zip(_ajustar_linhas(tabela, cabecalho, len(tabela.rows), len(lote)), lote):
+            for posicao, (celula, valor) in enumerate(zip(_celulas_unicas(linha), valores)):
+                _escrever_celula(celula, valor)
+                if limpar_fundo_desde is not None and posicao >= limpar_fundo_desde:
+                    _limpar_sombreamento(celula)
+
+
+def _preencher_faixas(partes: list, pronta) -> None:
+    """Tabelas de distribuicao: os rotulos das faixas sao os do Word; a base
+    traz quantidade e proporcao na ORDEM do Word. Os totais seguem o que o
+    rotulo da linha diz."""
+    from materiais_tabelas import _RE_INSUMOS, _RE_TOTAL, _RE_TOTAL_GERAL, inteiro
+
+    slots, totais = [], []
+    for tabela in partes:
+        for linha in list(tabela.rows)[1:]:
+            celulas = _celulas_unicas(linha)
+            rotulo = _texto_celula(celulas[0])
+            if _RE_TOTAL.match(rotulo) or _RE_INSUMOS.match(rotulo):
+                totais.append((rotulo, celulas, len(slots)))
+            else:
+                slots.append(celulas)
+    quantidades = pronta.rodape.get("quantidades", [])
+    for celulas, valores in zip(slots, pronta.linhas):
+        for celula, valor in zip(celulas[1:], valores):
+            if _texto_celula(celula) == "" and celula is not celulas[1]:
+                continue          # celula vazia no template (ex.: proporcao dos zerados)
+            _escrever_celula(celula, valor)
+    if len(pronta.linhas) != len(slots):
+        pronta.avisos.append(f"a base trouxe {len(pronta.linhas)} faixa(s) e o Word tem {len(slots)}")
+    ultimo_total = None
+    for rotulo, celulas, posicao in totais:
+        if _RE_TOTAL_GERAL.match(rotulo):
+            valor = sum(quantidades)
+        elif _RE_INSUMOS.match(rotulo):
+            valor = (ultimo_total / 27) if ultimo_total is not None else None
+        else:
+            valor = sum(quantidades[:posicao])
+            ultimo_total = valor
+        if valor is not None and len(celulas) > 1:
+            _escrever_celula(celulas[1], inteiro(valor))
+
+
+def _preencher_historico(tabela, pronta) -> None:
+    """Tabela 26: cabecalho com as referencias, pares quantidade/proporcao
+    por faixa e a linha de total."""
+    linhas = list(tabela.rows)
+    cabecalho = _celulas_unicas(linhas[1])
+    for celula, rotulo in zip(cabecalho[1:], pronta.cabecalho):
+        _escrever_celula(celula, rotulo)
+    dados = [l for l in linhas[2:] if not _texto_celula(_celulas_unicas(l)[0]).lower().startswith("total")]
+    for linha, valores in zip(dados, pronta.linhas):
+        celulas = _celulas_unicas(linha)
+        for celula, valor in zip(celulas[2:], valores):
+            _escrever_celula(celula, valor)
+    if len(dados) != len(pronta.linhas):
+        pronta.avisos.append(f"a base trouxe {len(pronta.linhas)} linha(s) e o Word tem {len(dados)}")
+    total = [l for l in linhas[2:] if _texto_celula(_celulas_unicas(l)[0]).lower().startswith("total")]
+    if total:
+        celulas = _celulas_unicas(total[0])
+        for celula, valor in zip(celulas[1:], pronta.rodape.get("total", [])):
+            _escrever_celula(celula, valor)
+
+
+def _preencher_fixa(tabela, pronta) -> None:
+    linhas = list(tabela.rows)
+    for (i, j), texto in pronta.celulas.items():
+        if i < len(linhas):
+            celulas = _celulas_unicas(linhas[i])
+            if j < len(celulas) and texto:
+                _escrever_celula(celulas[j], texto)
+
+
+def preencher_tabelas(documento, prontas: dict) -> tuple:
+    """Escreve cada TabelaPronta na(s) parte(s) da tabela do template.
+
+    Devolve (preenchidas, sem_tabela, avisos) com os numeros.
+    """
+    por_numero = tabelas_do_template(documento)
+    preenchidas, sem_tabela, avisos = [], [], []
+    for numero, pronta in sorted(prontas.items()):
+        partes = por_numero.get(numero)
+        if not partes:
+            sem_tabela.append(numero)
+            continue
+        if pronta.tipo == "erro":
+            avisos.extend(f"Tabela {numero}: {a}" for a in pronta.avisos)
+            continue
+        if pronta.tipo in ("lista", "resumo"):
+            _preencher_linhas(partes, pronta.linhas)
+        elif pronta.tipo == "uf":
+            _preencher_linhas(partes, pronta.linhas, limpar_fundo_desde=2)
+        elif pronta.tipo == "faixas":
+            _preencher_faixas(partes, pronta)
+        elif pronta.tipo == "historico":
+            _preencher_historico(partes[0], pronta)
+        elif pronta.tipo == "fixa":
+            _preencher_fixa(partes[0], pronta)
+        else:
+            continue
+        preenchidas.append(numero)
+        avisos.extend(f"Tabela {numero}: {a}" for a in pronta.avisos)
+    return preenchidas, sem_tabela, avisos
+
+
+# ──────────────────────────────────────────────────────────────
 # GERACAO
 # ──────────────────────────────────────────────────────────────
 def gerar_relatorio(
@@ -352,11 +595,13 @@ def gerar_relatorio(
     caminho_template: str = TEMPLATE,
     dpi: int = 200,
     textos: dict = None,
+    tabelas: dict = None,
 ) -> ResultadoRelatorio:
-    """Copia o template, preenche marcadores e textos e insere os graficos.
+    """Copia o template, preenche marcadores, textos e tabelas e insere os graficos.
 
     `capa` traz os valores de todos os marcadores (capa e corpo);
-    `textos` traz o texto final de cada bloco editavel, por id.
+    `textos` traz o texto final de cada bloco editavel, por id;
+    `tabelas` traz as TabelaPronta (materiais_tabelas.montar), por numero.
     """
     from docx import Document
 
@@ -371,6 +616,7 @@ def gerar_relatorio(
     documento = Document(caminho_saida)
     escritos, sem_bookmark = preencher_blocos(documento, textos or {})
     preenchidos, restantes = preencher_marcadores(documento, capa or {})
+    tab_ok, tab_sem, tab_avisos = preencher_tabelas(documento, tabelas or {})
     inseridos, ausentes = inserir_graficos(documento, figuras_por_numero, dpi)
     documento.save(caminho_saida)
 
@@ -382,4 +628,7 @@ def gerar_relatorio(
         marcadores_restantes=sorted(set(restantes)),
         blocos_escritos=escritos,
         blocos_sem_bookmark=sem_bookmark,
+        tabelas_preenchidas=tab_ok,
+        tabelas_sem_slot=tab_sem,
+        tabelas_avisos=tab_avisos,
     )

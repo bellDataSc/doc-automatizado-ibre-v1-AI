@@ -3,3 +3,9 @@ primaryColor = "#0D3B7C"
 backgroundColor = "#FFFFFF"
 secondaryBackgroundColor = "#F5F7FA"
 textColor = "#1F2933"
+
+[server]
+# A planilha das tabelas do RR (.xlsm) pode passar de 200 MB, o padrao do Streamlit.
+# No Streamlit in Snowflake esta opcao nao vale: la a planilha vai para o
+# stage e o app le de la (opcao "Ler do stage do Snowflake").
+maxUploadSize = 400
