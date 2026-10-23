@@ -22,9 +22,13 @@ O fluxo de entrada é baseado em planilhas (.xlsx).
    duas fontes, lado a lado: as views `SICRO_HIST_VW_*` da base (tabelas 9 a
    26, exceto a 18) e, opcionalmente, as abas "Tabela ..." da planilha das
    tabelas do RR (.xlsm), como o analista as deixou. O app não refaz os
-   cálculos: lê o que a base e a planilha já calcularam. Botão para baixar as
-   tabelas da base em Excel. No Word elas ainda saem com os valores do
-   template, até conferirmos as colunas de cada view com o layout da tabela.
+   cálculos: lê o que a base e a planilha já calcularam. As tabelas 12, 16 e
+   25 têm uma grade de **justificativas** editável, pré-preenchida com o texto
+   do template para o mesmo código. Botão para baixar as tabelas da base em
+   Excel. As tabelas lidas da base são escritas no Word
+   (`materiais_tabelas.py` monta, `materiais_writer.preencher_tabelas`
+   escreve), mantendo a formatação das linhas do template; partes "(2/2)"
+   crescem, encolhem ou somem conforme o número de linhas.
 4. **Textos do relatório** — um bloco por texto que muda a cada referência
    (72 blocos), pré-preenchido com o texto da referência anterior. O analista
    decide bloco a bloco: `Usar texto anterior / OK` ou edita e salva. Nada é
@@ -65,10 +69,11 @@ novo sobre o Word revisado daquela referência.
 
 ### O que ainda não sai das planilhas
 
-- Preenchimento das tabelas no Word: falta casar as colunas das views com o
-  layout de cada tabela do template.
 - Tabelas 1 a 8 (frete/DMT), 18 (sem view) e 27 a 36 (varejo e cotações):
-  fora da base.
+  fora da base, saem com os valores do template.
+- Cor de fundo das células das tabelas 11, 15, 23 e 24 (vermelho/azul no
+  template, sem regra consistente): o app escreve sem fundo até a regra ser
+  definida.
 - 13 gráficos de ordenamento por família: a família é informada na tela até
   a composição ter uma origem (planilha GERENCIAMENTO ou base).
 - 7 datas dentro de blocos editáveis ficaram como texto (run com formatação
@@ -127,7 +132,8 @@ materiais_config.py      # constantes extraídas dos arquivos da frente
 materiais_readers.py     # leitura, validação e cruzamento das duas planilhas
 materiais_catalogo.py    # catálogo dos 63 gráficos, lido do template
 materiais_charts.py      # amplitude, evolução e ordenamento
-materiais_writer.py      # preenche marcadores, textos e gráficos no template Word
+materiais_writer.py      # preenche marcadores, textos, tabelas e gráficos no template Word
+materiais_tabelas.py     # monta cada tabela do relatório a partir das views (sem recalcular)
 materiais_planilha_rr.py # leitura somente leitura da planilha das tabelas do RR (.xlsm)
 dnit_sicro_snowflake.py  # base histórica: preços, histórico, views das tabelas e carga controlada
 admin_carga_st.py        # área de Administração: carga de referência nova

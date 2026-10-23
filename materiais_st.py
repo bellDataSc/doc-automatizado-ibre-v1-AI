@@ -31,6 +31,7 @@ from materiais_catalogo import (
     ORDENAMENTO,
     blocos_texto,
     catalogo,
+    linhas_tabelas_template,
     tabelas,
 )
 from materiais_charts import figura_para_png, gerar_graficos_iter
@@ -43,6 +44,7 @@ from materiais_config import (
     TABELAS_RR_SEM_TEMPLATE,
     UFS,
 )
+from materiais_tabelas import justificativas_do_template, montar
 from materiais_planilha_rr import (
     abas_de_tabelas,
     abrir,
@@ -71,6 +73,12 @@ DPI_WORD = 160
 CHAVE_GRAFICOS = "materiais_graficos"
 CHAVE_FAMILIAS = "materiais_familias"
 CHAVE_TEXTOS = "materiais_textos"
+CHAVE_JUSTIFICATIVAS = "materiais_justificativas"
+
+# Quantas referencias (contando a atual) a tabela 26 mostra, como no template.
+REFERENCIAS_T26 = 5
+# Tabelas com coluna "Justificativa" escrita pelo analista.
+TABELAS_COM_JUSTIFICATIVA = (12, 16, 25)
 
 MESES = [
     "janeiro", "fevereiro", "março", "abril", "maio", "junho",
@@ -656,6 +664,47 @@ def _lista_cache(lista: str, referencia: str):
     return sf.ler_lista_relevante(lista, referencia)
 
 
+@st.cache_data(ttl=600, show_spinner=False)
+def _historico_t26_cache(referencia: str, quantas: int):
+    refs = [r for r in sf.listar_referencias() if r <= referencia][:quantas]
+    refs = sorted(refs)
+    dados = sf.ler_view_referencias("tab_faixas", refs)
+    dados, _ = sf.recortar_tabela(dados, "T27")
+    return refs, dados
+
+
+def _grade_justificativas(numero: int, dados) -> dict:
+    """Justificativa por item (tabelas 12, 16 e 25), editavel na tela.
+
+    Pre-preenchida com o texto do template quando o item ja estava la na
+    referencia anterior; em branco quando e item novo.
+    """
+    todas = st.session_state.setdefault(CHAVE_JUSTIFICATIVAS, {})
+    anteriores = justificativas_do_template(numero, linhas_tabelas_template().get(numero, []))
+    codigos = [str(c) for c in dados["CODIGO"]] if "CODIGO" in dados.columns else []
+    guardadas = todas.setdefault(numero, {})
+    grade = pd.DataFrame({
+        "Código": codigos,
+        "Descrição": [str(d) for d in dados["DESCRICAO"]] if "DESCRICAO" in dados.columns else "",
+        "Justificativa": [guardadas.get(c, anteriores.get(c, "")) for c in codigos],
+    })
+    novos = [c for c in codigos if c not in anteriores]
+    st.caption(
+        "Justificativa de cada item: texto do analista. Pré-preenchida com o que o "
+        "template traz para o mesmo código; em branco para item novo"
+        + (f" ({len(novos)}: {', '.join(novos[:8])}{'…' if len(novos) > 8 else ''})" if novos else "")
+        + ". Edite na própria grade."
+    )
+    editada = st.data_editor(
+        grade, use_container_width=True, hide_index=True, key=f"materiais_just_{numero}",
+        column_config={"Código": st.column_config.TextColumn(disabled=True),
+                       "Descrição": st.column_config.TextColumn(disabled=True),
+                       "Justificativa": st.column_config.TextColumn(width="large")},
+    )
+    guardadas.update({c: str(j or "") for c, j in zip(editada["Código"], editada["Justificativa"])})
+    return guardadas
+
+
 def _tabelas_da_base(referencia: str, base) -> dict:
     """{numero no template: {"dados": df, "nota": str}} lidos da base."""
     views = _views_cache(referencia)
@@ -755,11 +804,11 @@ def _passo_tabelas(referencia: dict, base) -> dict:
                          "Título": titulo, "Situação": texto})
     st.dataframe(pd.DataFrame(situacao), use_container_width=True, hide_index=True)
     st.caption(
-        f"No Word, as tabelas ainda saem com os valores do template ({origem_template}): "
-        "o preenchimento célula a célula entra depois de conferirmos as colunas de cada "
-        "view com o layout da tabela no template."
+        f"As tabelas que a base traz são escritas no Word com a formatação do template; "
+        f"as demais saem com os valores do template ({origem_template})."
     )
 
+    justificativas: dict = {}
     for numero, titulo in lista.items():
         regra = TABELAS_RR.get(numero, {})
         item = da_base.get(numero)
@@ -772,6 +821,8 @@ def _passo_tabelas(referencia: dict, base) -> dict:
                 if item["nota"]:
                     st.caption(item["nota"])
                 st.dataframe(item["dados"], use_container_width=True, hide_index=True)
+                if numero in TABELAS_COM_JUSTIFICATIVA:
+                    justificativas[numero] = _grade_justificativas(numero, item["dados"])
             if abas:
                 escolha = st.selectbox(
                     "Aba da planilha", ["—"] + abas,
@@ -801,7 +852,24 @@ def _passo_tabelas(referencia: dict, base) -> dict:
                 st.dataframe(sf.estrutura_views(), use_container_width=True, hide_index=True)
             except Exception as erro:
                 st.warning(f"Não consegui ler a estrutura: {erro}")
-    return da_base
+
+    # o que vai para o Word
+    historico, refs_t26 = None, []
+    if da_base and sf.configurado():
+        try:
+            refs_t26, historico = _historico_t26_cache(referencia["codigo"], REFERENCIAS_T26)
+        except Exception as erro:
+            st.warning(f"Não consegui ler o histórico da tabela 26: {erro}")
+    prontas = montar(da_base, justificativas, historico, refs_t26)
+    if prontas:
+        st.success(
+            f"{len(prontas)} tabela(s) prontas para o Word a partir da base: "
+            + ", ".join(str(n) for n in sorted(prontas))
+        )
+        for pronta in prontas.values():
+            for aviso in pronta.avisos:
+                st.warning(f"Tabela {pronta.numero}: {aviso}")
+    return prontas
 
 
 # ──────────────────────────────────────────────────────────────
@@ -907,7 +975,7 @@ def _passo_textos(referencia: dict) -> dict:
 # ──────────────────────────────────────────────────────────────
 # PASSO 5 — RELATÓRIO
 # ──────────────────────────────────────────────────────────────
-def _passo_relatorio(guardado, referencia: dict, textos: dict) -> None:
+def _passo_relatorio(guardado, referencia: dict, textos: dict, prontas: dict = None) -> None:
     if not guardado:
         st.info("Gere e confira os gráficos para liberar a geração do relatório.")
         return
@@ -917,7 +985,7 @@ def _passo_relatorio(guardado, referencia: dict, textos: dict) -> None:
     st.caption(
         "O relatório sai do template da entrega: marcadores da capa e das datas "
         "preenchidos, textos decididos acima escritos nos seus blocos, gráficos "
-        "conferidos sob as legendas. As tabelas continuam como estão no template."
+        "conferidos sob as legendas, tabelas da base escritas nas suas posições."
     )
     if pendentes:
         st.warning(
@@ -940,6 +1008,7 @@ def _passo_relatorio(guardado, referencia: dict, textos: dict) -> None:
                     capa=referencia,
                     dpi=DPI_WORD,
                     textos=textos,
+                    tabelas=prontas or {},
                 )
                 conteudo = destino.read_bytes()
         except Exception as erro:
@@ -947,9 +1016,15 @@ def _passo_relatorio(guardado, referencia: dict, textos: dict) -> None:
             return
 
     st.success(
-        f"{len(resultado.graficos_inseridos)} gráficos inseridos e "
-        f"{len(resultado.blocos_escritos)} blocos de texto escritos."
+        f"{len(resultado.graficos_inseridos)} gráficos inseridos, "
+        f"{len(resultado.blocos_escritos)} blocos de texto escritos e "
+        f"{len(resultado.tabelas_preenchidas)} tabelas preenchidas."
     )
+    for aviso in resultado.tabelas_avisos:
+        st.warning(aviso)
+    if resultado.tabelas_sem_slot:
+        st.warning("Tabelas sem legenda correspondente no template: "
+                   + ", ".join(str(n) for n in resultado.tabelas_sem_slot))
     if resultado.blocos_sem_bookmark:
         st.warning("Blocos sem marcação no template: " + ", ".join(resultado.blocos_sem_bookmark))
     if resultado.graficos_ausentes:
@@ -1025,7 +1100,7 @@ def render() -> None:
 
     st.divider()
     st.markdown("## 3. Tabelas")
-    _passo_tabelas(referencia, base)
+    prontas = _passo_tabelas(referencia, base)
 
     st.divider()
     st.markdown("## 4. Textos do relatório")
@@ -1033,4 +1108,4 @@ def render() -> None:
 
     st.divider()
     st.markdown("## 5. Relatório em Word")
-    _passo_relatorio(guardado, referencia, textos)
+    _passo_relatorio(guardado, referencia, textos, prontas)

@@ -189,6 +189,16 @@ def ler_view(chave: str, referencia: str) -> pd.DataFrame:
     return _consulta(f"SELECT * FROM {nome}")
 
 
+def ler_view_referencias(chave: str, referencias: list) -> pd.DataFrame:
+    """Linhas de uma view para varias referencias (historico da tabela 26)."""
+    if not referencias:
+        return pd.DataFrame()
+    nome = nome_view(chave)
+    col_ref = SNOWFLAKE["colunas"]["referencia"]
+    marcas = ", ".join("?" for _ in referencias)
+    return _consulta(f"SELECT * FROM {nome} WHERE {col_ref} IN ({marcas})", list(referencias))
+
+
 def numero_tabela(valor) -> str:
     """'T10', 'Tabela 10', 10 -> 'T10'. Vazio quando nao ha numero."""
     m = re.search(r"(\d+)", str(valor))

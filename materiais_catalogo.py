@@ -175,3 +175,17 @@ def blocos_texto(referencia: str = None) -> dict:
         return {}
     with open(os.path.join(PASTA_TEXTOS, arquivos[-1]), encoding="utf-8") as f:
         return json.load(f)
+
+
+@lru_cache(maxsize=1)
+def linhas_tabelas_template(caminho_template: str = TEMPLATE) -> dict:
+    """{numero: [[celula, ...], ...]} com o texto das tabelas do template,
+    partes concatenadas. Serve para pre-preencher as justificativas."""
+    from docx import Document
+
+    from materiais_writer import linhas_da_tabela, tabelas_do_template
+
+    saida = {}
+    for numero, partes in tabelas_do_template(Document(caminho_template)).items():
+        saida[numero] = [l for parte in partes for l in linhas_da_tabela(parte)]
+    return saida
