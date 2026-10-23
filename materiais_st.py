@@ -6,7 +6,8 @@ Fluxo da tela, na ordem em que o analista trabalha:
                  (Snowflake, quando configurado, ou planilhas enviadas)
   1. Planilhas   confere o que foi lido
   2. Graficos    botao "Gerar graficos", conferencia visual na tela
-  3. Tabelas     situacao de cada tabela (calculada, fixa ou pendente)
+  3. Tabelas     tabelas lidas das views da base (Snowflake) e/ou da
+                 planilha das tabelas do RR, com a situacao de cada uma
   4. Textos      cada bloco variavel com o texto da referencia anterior:
                  "Usar texto anterior / OK" ou editar
   5. Relatorio   so depois da conferencia, gera o Word a partir do template
@@ -20,6 +21,7 @@ import tempfile
 from io import BytesIO
 from pathlib import Path
 
+import pandas as pd
 import streamlit as st
 
 import dnit_sicro_snowflake as sf
@@ -32,7 +34,21 @@ from materiais_catalogo import (
     tabelas,
 )
 from materiais_charts import figura_para_png, gerar_graficos_iter
-from materiais_config import CORES_SIGLAS, SIGLAS_ORIGEM, UFS
+from materiais_config import (
+    CORES_SIGLAS,
+    HISTORICO_MAX_REFERENCIAS,
+    REGIAO_DA_UF,
+    SIGLAS_ORIGEM,
+    TABELAS_RR,
+    TABELAS_RR_SEM_TEMPLATE,
+    UFS,
+)
+from materiais_planilha_rr import (
+    abas_de_tabelas,
+    abrir,
+    ler_aba_bruta,
+    ler_cadastro,
+)
 from materiais_readers import (
     BaseMateriais,
     amplitude,
@@ -160,8 +176,110 @@ def _origem_dos_dados(referencia: dict):
         return "snowflake", None
     with st.spinner("Lendo a referência na base…"):
         longo = sf.carregar_precos(referencia["codigo"])
-    itens = longo[["codigo", "descricao", "unidade"]].drop_duplicates().reset_index(drop=True)
+    longo["regiao"] = longo["uf"].map(REGIAO_DA_UF)
+    itens = (longo[["codigo", "descricao", "unidade"]].drop_duplicates("codigo")
+             .sort_values("codigo").reset_index(drop=True))
     return "snowflake", BaseMateriais(itens=itens, longo=longo, preco=None, origem=None)
+
+
+def _anexar_historico(base, referencia: dict) -> None:
+    """Referencias anteriores da base, para o eixo do tempo da evolucao.
+
+    Vale para as duas origens: com planilhas, a referencia atual vem delas e
+    as anteriores da base. Sem a base, o grafico sai com um ponto so.
+    """
+    if not sf.configurado():
+        return
+    usar = st.checkbox(
+        "Usar as referências anteriores da base nos gráficos de evolução",
+        value=True, key="materiais_usar_historico",
+    )
+    if not usar:
+        return
+    codigos = sorted({c for g in catalogo() if g.tipo == EVOLUCAO for c in g.codigos})
+    try:
+        historico = _historico_cache(tuple(codigos), referencia["codigo"])
+    except Exception as erro:
+        st.warning(f"Não consegui ler o histórico na base: {erro}")
+        return
+    # a referencia atual vale sempre a que esta sendo processada
+    historico = historico[historico["referencia"] != referencia["codigo"]]
+    atual = base.longo[base.longo["codigo"].isin(codigos)][["codigo", "uf", "preco"]].copy()
+    atual.insert(0, "referencia", referencia["codigo"])
+    base.historico = pd.concat([historico, atual], ignore_index=True)
+    refs = sorted(base.historico["referencia"].unique())
+    st.caption(f"Evolução com {len(refs)} referência(s): {', '.join(refs)}.")
+
+
+@st.cache_data(ttl=600, show_spinner="Lendo o histórico na base…")
+def _historico_cache(codigos: tuple, referencia: str):
+    return sf.carregar_historico(list(codigos), referencia, HISTORICO_MAX_REFERENCIAS)
+
+
+# ──────────────────────────────────────────────────────────────
+# PLANILHA DAS TABELAS DO RR (.xlsm pesado)
+# ──────────────────────────────────────────────────────────────
+def planilha_rr(chave: str):
+    """Envio ou leitura do stage da planilha das tabelas do RR.
+
+    A planilha e aberta uma vez por arquivo e o que foi lido (cadastro e abas
+    "Tabela ...") fica na sessao: clicar na tela nao reabre o .xlsm.
+    Devolve {"nome", "cadastro", "erro_cadastro", "abas"} ou None.
+    """
+    opcoes = ["Enviar arquivo", "Ler do stage do Snowflake"]
+    if not sf.configurado():
+        opcoes = opcoes[:1]
+    origem = st.radio(
+        "Onde está a planilha das tabelas do RR", opcoes, horizontal=True,
+        key=f"{chave}_origem",
+        help="No Streamlit in Snowflake o upload tem limite de tamanho; "
+             "acima dele, ponha a planilha no stage e leia de lá.",
+    )
+    if origem == opcoes[0]:
+        arquivo = st.file_uploader(
+            "SICRO_AAAA.MM_TABELAS-MATERIAIS-RR-TOMO-1 (.xlsm/.xlsx)",
+            type=["xlsm", "xlsx"], key=f"{chave}_arquivo",
+        )
+        if not arquivo:
+            return None
+        identidade = (arquivo.name, arquivo.size)
+        abrir_fonte = lambda: abrir(arquivo)
+        nome = arquivo.name
+    else:
+        caminho = st.text_input(
+            "Caminho no stage",
+            placeholder=f"{sf.caminho_stage('2026-10')}SICRO_2026.10_TABELAS-MATERIAIS-RR-TOMO-1_V02.xlsm",
+            key=f"{chave}_stage",
+        ).strip()
+        if not caminho:
+            return None
+        identidade = ("stage", caminho)
+        abrir_fonte = lambda: abrir(BytesIO(sf.ler_do_stage(caminho).read()))
+        nome = caminho.rsplit("/", 1)[-1]
+
+    guardado = st.session_state.get(f"{chave}_lida")
+    if guardado and guardado["identidade"] == identidade:
+        return guardado
+
+    try:
+        with st.spinner("Abrindo a planilha em modo somente leitura (pode levar alguns minutos)…"):
+            livro = abrir_fonte()
+            try:
+                try:
+                    cadastro, erro = ler_cadastro(livro), ""
+                except Exception as e:
+                    cadastro, erro = None, str(e)
+                abas = {aba: ler_aba_bruta(livro, aba) for aba in abas_de_tabelas(livro)}
+            finally:
+                livro.close()
+    except Exception as erro_abrir:
+        st.error(f"Não consegui abrir a planilha: {erro_abrir}")
+        return None
+
+    guardado = {"identidade": identidade, "nome": nome, "cadastro": cadastro,
+                "erro_cadastro": erro, "abas": abas}
+    st.session_state[f"{chave}_lida"] = guardado
+    return guardado
 
 
 # ──────────────────────────────────────────────────────────────
@@ -519,27 +637,171 @@ def _passo_graficos(base, referencia: str, assinatura: tuple):
 # ──────────────────────────────────────────────────────────────
 # PASSO 3 — TABELAS
 # ──────────────────────────────────────────────────────────────
-def _passo_tabelas() -> None:
-    """Situacao de cada tabela do relatorio.
+@st.cache_data(ttl=600, show_spinner="Lendo as views das tabelas na base…")
+def _views_cache(referencia: str) -> dict:
+    """{chave da view: DataFrame ou mensagem de erro} para a referencia."""
+    lidas = {}
+    usadas = {t["view"] for t in TABELAS_RR.values() if t["fonte"] == "view"}
+    usadas |= set(TABELAS_RR_SEM_TEMPLATE.values())
+    for chave in sorted(usadas):
+        try:
+            lidas[chave] = sf.ler_view(chave, referencia)
+        except Exception as erro:
+            lidas[chave] = f"{erro}"
+    return lidas
 
-    Nenhuma e calculada ainda: a planilha que alimenta as tabelas sera
-    mapeada aba a aba antes de qualquer tabela ser preenchida pelo app.
+
+@st.cache_data(ttl=600, show_spinner=False)
+def _lista_cache(lista: str, referencia: str):
+    return sf.ler_lista_relevante(lista, referencia)
+
+
+def _tabelas_da_base(referencia: str, base) -> dict:
+    """{numero no template: {"dados": df, "nota": str}} lidos da base."""
+    views = _views_cache(referencia)
+    descricao = dict(zip(base.itens["codigo"], base.itens["descricao"]))
+    saida = {}
+    for numero, regra in TABELAS_RR.items():
+        if regra["fonte"] == "view":
+            lida = views.get(regra["view"])
+            if isinstance(lida, str):
+                saida[numero] = {"dados": None, "nota": f"erro na view: {lida}"}
+                continue
+            dados, separou = sf.recortar_tabela(lida, regra["planilha"])
+            nota = "" if separou else (
+                "a view não tem coluna que identifique a tabela: mostrando a view inteira"
+            )
+            saida[numero] = {"dados": dados, "nota": nota}
+        elif regra["fonte"] == "lista":
+            try:
+                dados = _lista_cache(regra["lista"], referencia).copy()
+                dados["DESCRICAO"] = dados["CODIGO"].map(descricao)
+                saida[numero] = {"dados": dados, "nota": ""}
+            except Exception as erro:
+                saida[numero] = {"dados": None, "nota": f"erro na lista: {erro}"}
+    for codigo, chave in TABELAS_RR_SEM_TEMPLATE.items():
+        lida = views.get(chave)
+        if not isinstance(lida, str):
+            dados, _ = sf.recortar_tabela(lida, codigo)
+            saida[codigo] = {"dados": dados, "nota": "tabela da planilha sem correspondente no template"}
+    return saida
+
+
+def _aba_provavel(abas: list, codigo_planilha: str) -> int:
+    """Indice da aba 'Tabela ...' cujo nome cita o numero da tabela (0 = nenhuma)."""
+    import re
+
+    alvo = sf.numero_tabela(codigo_planilha)[1:]
+    for indice, aba in enumerate(abas, start=1):
+        if alvo and alvo in re.findall(r"\d+", aba):
+            return indice
+    return 0
+
+
+def _excel_das_tabelas(da_base: dict) -> bytes:
+    buffer = BytesIO()
+    with pd.ExcelWriter(buffer, engine="openpyxl") as escritor:
+        for numero, item in da_base.items():
+            if item["dados"] is not None:
+                nome = f"Tabela {numero}" if isinstance(numero, int) else f"Planilha {numero}"
+                item["dados"].to_excel(escritor, sheet_name=nome[:31], index=False)
+    return buffer.getvalue()
+
+
+def _passo_tabelas(referencia: dict, base) -> dict:
+    """Tabelas do relatorio lidas da base (views SICRO_HIST_VW_*) e/ou da
+    planilha das tabelas do RR, como o analista a deixou.
+
+    Os calculos nao sao refeitos no app: a base ja traz as tabelas prontas nas
+    views; a planilha traz os valores calculados pelo Excel. Devolve as
+    tabelas lidas da base, {numero: {"dados", "nota"}}.
     """
-    lista = tabelas()
+    lista = dict(tabelas())
+    origem_template = blocos_texto().get("referencia", "?")
+
+    da_base = {}
+    if sf.configurado():
+        try:
+            da_base = _tabelas_da_base(referencia["codigo"], base)
+        except Exception as erro:
+            st.warning(f"Não consegui ler as tabelas na base: {erro}")
+    else:
+        st.info("Base do Snowflake não configurada: as tabelas só podem vir da planilha.")
+
+    with st.expander("Planilha das tabelas do RR (opcional: conferência ou entrada manual)"):
+        st.caption(
+            "A planilha .xlsm é aberta em modo somente leitura, com os valores já "
+            "calculados pelo Excel. Use quando a referência ainda não estiver na "
+            "base ou para conferir a base contra a planilha."
+        )
+        lida = planilha_rr("materiais_rr")
+    abas = list(lida["abas"]) if lida else []
+
+    situacao = []
+    for numero, titulo in lista.items():
+        regra = TABELAS_RR.get(numero, {"fonte": "fora", "planilha": "", "motivo": "sem regra"})
+        item = da_base.get(numero)
+        if regra["fonte"] == "fora":
+            texto = f"Fora da base: {regra.get('motivo', '')}"
+        elif item is None:
+            texto = "Base indisponível"
+        elif item["dados"] is None:
+            texto = item["nota"]
+        else:
+            texto = f"Base: {len(item['dados'])} linha(s)" + (f" ({item['nota']})" if item["nota"] else "")
+        if regra.get("observacao"):
+            texto += f" · {regra['observacao']}"
+        situacao.append({"Tabela": f"Tabela {numero}", "Planilha": regra.get("planilha", ""),
+                         "Título": titulo, "Situação": texto})
+    st.dataframe(pd.DataFrame(situacao), use_container_width=True, hide_index=True)
     st.caption(
-        f"O template tem {len(lista)} tabelas. Até a planilha das tabelas ser "
-        "mapeada, todas saem no Word com os valores da referência de origem do "
-        "template. Confira a situação de cada uma:"
+        f"No Word, as tabelas ainda saem com os valores do template ({origem_template}): "
+        "o preenchimento célula a célula entra depois de conferirmos as colunas de cada "
+        "view com o layout da tabela no template."
     )
-    origem = blocos_texto().get("referencia", "?")
-    st.dataframe(
-        {
-            "Tabela": [f"Tabela {n}" for n, _ in lista],
-            "Título": [t for _, t in lista],
-            "Situação": [f"Pendente: mantém valores de {origem} (template)" for _ in lista],
-        },
-        use_container_width=True, hide_index=True,
-    )
+
+    for numero, titulo in lista.items():
+        regra = TABELAS_RR.get(numero, {})
+        item = da_base.get(numero)
+        tem_base = item is not None and item["dados"] is not None
+        if not tem_base and not abas:
+            continue
+        with st.expander(f"Tabela {numero} - {titulo}"):
+            if tem_base:
+                st.markdown("**Base (Snowflake)**")
+                if item["nota"]:
+                    st.caption(item["nota"])
+                st.dataframe(item["dados"], use_container_width=True, hide_index=True)
+            if abas:
+                escolha = st.selectbox(
+                    "Aba da planilha", ["—"] + abas,
+                    index=_aba_provavel(abas, regra.get("planilha", "")),
+                    key=f"materiais_tab_aba_{numero}",
+                )
+                if escolha != "—":
+                    st.markdown(f"**Planilha: aba '{escolha}'**")
+                    st.dataframe(lida["abas"][escolha], use_container_width=True)
+
+    for codigo in TABELAS_RR_SEM_TEMPLATE:
+        item = da_base.get(codigo)
+        if item and item["dados"] is not None:
+            with st.expander(f"{codigo} da planilha (sem tabela correspondente no template)"):
+                st.dataframe(item["dados"], use_container_width=True, hide_index=True)
+
+    if any(i["dados"] is not None for i in da_base.values()):
+        st.download_button(
+            "Baixar as tabelas da base (Excel)", data=_excel_das_tabelas(da_base),
+            file_name=f"SICRO_tabelas_base_{referencia['codigo']}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            key="materiais_baixar_tabelas",
+        )
+    if sf.configurado():
+        with st.expander("Estrutura das views na base"):
+            try:
+                st.dataframe(sf.estrutura_views(), use_container_width=True, hide_index=True)
+            except Exception as erro:
+                st.warning(f"Não consegui ler a estrutura: {erro}")
+    return da_base
 
 
 # ──────────────────────────────────────────────────────────────
@@ -748,6 +1010,8 @@ def render() -> None:
             return
         assinatura = ("snowflake", referencia["codigo"])
 
+    _anexar_historico(base, referencia)
+
     st.divider()
     st.markdown("## 1. Dados da referência")
     if base.preco is not None:
@@ -761,7 +1025,7 @@ def render() -> None:
 
     st.divider()
     st.markdown("## 3. Tabelas")
-    _passo_tabelas()
+    _passo_tabelas(referencia, base)
 
     st.divider()
     st.markdown("## 4. Textos do relatório")
